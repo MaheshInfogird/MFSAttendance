@@ -1,0 +1,43 @@
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar_inner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/RedBgColor"
+    android:theme="@style/AppTheme"
+    local:popupTheme="@style/AppTheme"
+    local:theme="@style/AppTheme">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attendance"
+        android:textSize="23sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/WhiteTextColor"
+        android:layout_gravity="center_vertical"
+        android:paddingRight="10dp"/>
+
+    <TextView
+        android:id="@+id/header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attendance"
+        android:textSize="23sp"
+        android:gravity="center"
+        android:textColor="@color/WhiteTextColor"
+        android:layout_gravity="center" />
+
+    <ImageView
+        android:id="@+id/img_logout"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:gravity="right"
+        android:src="@drawable/logout_menu_icon"
+        android:layout_gravity="right"
+        android:paddingRight="25dp"
+        android:visibility="gone"/>
+
+</android.support.v7.widget.Toolbar>

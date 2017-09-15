@@ -1,0 +1,179 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/GreyBgColor"
+    android:keepScreenOn="true">
+
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar_inner"/>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:context=".MainActivity" 
+        android:orientation="vertical"
+        android:background="@color/GreyBgColor"
+        android:gravity="center">
+        
+        <LinearLayout
+            android:id="@+id/signIn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="80dp"
+                android:orientation="vertical"
+                android:background="@drawable/logo"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:id="@+id/logo_login"
+                    android:layout_width="170dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/hr_gird_logo"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+            <!--<ImageView
+                android:id="@+id/logo_login"
+                android:layout_width="106dp"
+                android:layout_height="105dp"
+                android:src="@drawable/logo_color"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"/>-->
+            
+            <EditText
+                android:id="@+id/ed_userName"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="User Name"
+                android:textSize="18sp"
+                android:textColorHint="@color/EditTextLabelsColor"
+                android:background="@drawable/edit_text_red"
+                android:paddingLeft="10dp"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="90dp"/>
+            
+            <EditText
+                android:id="@+id/ed_password"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="Password"
+                android:textSize="18sp"
+                android:textColorHint="@color/EditTextLabelsColor"
+                android:background="@drawable/edit_text_red"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:paddingLeft="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"/>
+            
+            <TextView
+                android:id="@+id/forgot_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password ?"
+                android:textSize="18sp"
+                android:gravity="right"
+                android:textColor="@color/BlackTextColor"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"/>
+            
+            <Button
+                android:id="@+id/btn_signIn"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="Login"
+                android:textSize="20sp"
+                android:textColor="@color/WhiteTextColor"
+                android:textAllCaps="true"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/login_button"/>
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/progress_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/black_border"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:visibility="gone"
+            android:layout_marginBottom="40dp"
+            android:layout_centerInParent="true">
+            
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyle"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please wait..."
+                android:layout_marginLeft="40dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_poweredby_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Powered by"
+            android:textSize="13sp"
+            android:textColor="@color/BlackTextColor"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_above="@+id/powered_logo"/>
+
+        <ImageView
+            android:id="@+id/powered_logo"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:src="@drawable/hr_gird_logo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
+        
+        </LinearLayout>
+        
+    </RelativeLayout>
+</ScrollView>
+</LinearLayout>

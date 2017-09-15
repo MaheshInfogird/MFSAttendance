@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#f77c71</color>
+    <color name="colorPrimaryDark">#eb5f52</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="RedBgColor">#eb5f52</color>
+    <color name="GreyBgColor">#f3ebe8</color>
+    <color name="WhiteBgColor">#ffffff</color>
+
+    <!--Text Color-->
+    <color name="WhiteTextColor">#ffffff</color>
+    <color name="RedTextColor">#eb5f52</color>
+    <color name="BlackTextColor">#5a5a5a</color>
+    <color name="GreyTextColor">#838383</color>
+    <color name="GreenTextColor">#04b59e</color>
+
+    <color name="GreenColor">#f71bec64</color>
+
+    <color name="InputTextColor">#757575</color>
+
+    <!--Edit Text Color-->
+    <color name="EditTextLabelsColor">#5a5a5a</color>
+    <color name="EditTextFloatingLabelsColor">#eb5f52</color>
+
+    <color name="pinkColor">#ebed7272</color>
+
+    <color name="LandingPageBg">#3498db</color>
+    <color name="BgColor">#ffffff</color>
+
+    <!--New Colors-->
+    <color name="DarkBlueTextColor">#34495e</color>
+    <color name="GreyPageBg">#e0e3e5</color>
+    <color name="divider_color">#9f9f9f</color>
+
+    <color name="GreenBgColor">#64af43</color>
+    <color name="OrangeBgColor">#eb5f52</color>
+
+
+    <color name="TextGreyColor">#848484</color>
+    <color name="TextBlackColor">#404040</color>
+    <color name="TextOrangeColor">#eb5f52</color>
+    <color name="TextGreenColor">#64af43</color>
+    <color name="TextWhiteColor">#ffffff</color>
+</resources>

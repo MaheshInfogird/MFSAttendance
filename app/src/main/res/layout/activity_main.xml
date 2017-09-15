@@ -1,0 +1,201 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/RedBgColor">
+
+        <ImageButton
+            android:id="@+id/app_destroy"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/power_off_icon"
+            android:layout_gravity="center"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/RedBgColor"/>
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="80dp"
+                android:orientation="vertical"
+                android:background="@drawable/logo"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="100dp"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:id="@+id/main_logo"
+                    android:layout_width="170dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/hr_gird_logo"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+            
+            <!--Logo-->
+            <!--<ImageView
+                android:id="@+id/main_logo"
+                android:layout_width="130dp"
+                android:layout_height="134dp"
+                android:background="@drawable/logo_white"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"/>-->
+
+            <LinearLayout
+                android:id="@+id/url_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:visibility="gone">
+                <!--Logo-->
+
+                <EditText
+                    android:id="@+id/company_url1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:hint="Type your company url to access"
+                    android:textSize="13sp"
+                    android:textColorHint="@color/WhiteTextColor"
+                    android:background="@drawable/edit_text_white"
+                    android:paddingLeft="10dp"
+                    android:layout_weight="1"
+                    android:textCursorDrawable="@drawable/white_cursor"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
+
+                <Button
+                    android:id="@+id/btn_getUrl1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:text="GET"
+                    android:textSize="14sp"
+                    android:textColor="@color/RedTextColor"
+                    android:textAllCaps="true"
+                    android:stateListAnimator="@null"
+                    android:elevation="3dp"
+                    android:background="@drawable/attendance_button"/>
+
+            </LinearLayout>
+
+        <!--<LinearLayout
+            android:id="@+id/main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:paddingBottom="50dp">-->
+            
+            <Button
+                android:id="@+id/btn_attendance"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="Attendance"
+                android:textSize="18sp"
+                android:textColor="@color/WhiteTextColor"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:stateListAnimator="@null"
+                android:layout_above="@+id/btn_registration"
+                android:elevation="3dp"
+                android:background="@drawable/admin_button"/>
+
+            <Button
+                android:id="@+id/btn_registration"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="Thumb Registration"
+                android:textSize="18sp"
+                android:textColor="@color/WhiteTextColor"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                android:textAllCaps="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:stateListAnimator="@null"
+                android:elevation="3dp"
+                android:background="@drawable/admin_button"/>
+
+            <Button
+                android:id="@+id/btn_resetThumb"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="Reset Thumb"
+                android:textSize="18sp"
+                android:textColor="@color/WhiteTextColor"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                android:stateListAnimator="@null"
+                android:layout_below="@+id/btn_registration"
+                android:elevation="3dp"
+                android:background="@drawable/admin_button"/>
+
+        <!--</LinearLayout>-->
+
+        <LinearLayout
+            android:id="@+id/progress_layout_main"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/black_border"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="40dp">
+
+            <ProgressBar
+                android:id="@+id/progress_bar_main"
+                style="?android:attr/progressBarStyle"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:layout_marginLeft="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please wait..."
+                android:layout_marginLeft="40dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Powered by"
+            android:textSize="13sp"
+            android:textColor="@color/WhiteTextColor"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_above="@+id/powered_logo"/>
+
+        <ImageView
+            android:id="@+id/powered_logo"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:src="@drawable/hr_gird_logo_white"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+</ScrollView>
