@@ -403,10 +403,11 @@ public class MainActivity extends AppCompatActivity {
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
 
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&signinby=%s",
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
+                            URLEncoder.encode("", "UTF-8"),
                             URLEncoder.encode("1", "UTF-8"));
 
                     url = new URL(Transurl + query);

@@ -69,13 +69,15 @@ public class GPSTracker extends Service
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if (!isGPSEnabled && !isNetworkEnabled)
+            if (!isGPSEnabled || !isNetworkEnabled)
             {
+                this.canGetLocation = false;
                 // No network provider is enabled
             }
             else
             {
                 this.canGetLocation = true;
+
                 if (isNetworkEnabled)
                 {
                     Log.d("Network_Net", "Network_Net");
@@ -141,16 +143,19 @@ public class GPSTracker extends Service
         String result = null;
         try
         {
-            List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-            String address = addressList.get(0).getAddressLine(0);
-            Log.i("address", address);
-            String area = addressList.get(0).getAddressLine(1);
-            Log.i("area", area);
-            String city = addressList.get(0).getAddressLine(2);
-            Log.i("city", city);
-            CompleteAddress = address + ", " + area;
-            Log.i("CompleteAddress1",""+address+area);
-            Log.i("CompleteAddress",""+CompleteAddress);
+            if (latitude > 0.0 && longitude > 0.0)
+            {
+                List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                String address = addressList.get(0).getAddressLine(0);
+                Log.i("address", address);
+                String area = addressList.get(0).getAddressLine(1);
+                Log.i("area", area);
+                String city = addressList.get(0).getAddressLine(2);
+                //Log.i("city", city);
+                CompleteAddress = address + ", " + area;
+                //Log.i("CompleteAddress1",""+address+area);
+                 Log.i("CompleteAddress",""+CompleteAddress);
+            }
         }
         catch (Exception e)
         {

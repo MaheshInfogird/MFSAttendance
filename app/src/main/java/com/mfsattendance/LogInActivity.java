@@ -142,33 +142,50 @@ public class LogInActivity extends AppCompatActivity
                 latitude = gps.getLatitude();
                 longitude = gps.getLongitude();
                 Current_Location = gps.getlocation_Address();
-                Log.i("Current_Location",Current_Location);
+                //Log.i("Current_Location",Current_Location);
+                if (Current_Location == null)
+                {
+                    Current_Location = "";
+                }
             }
             else
             {
-                AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
-                builder.setMessage("Enable GPS");
+                Log.i("Current_Location","Current_Location");
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(LogInActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                alertDialog.setMessage("Please Enable GPS");
+                alertDialog.setCancelable(true);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alertDialog.show();
+
+                /*AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
+                builder.setMessage("Please Enable GPS");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int arg1)
                     {
                         d.dismiss();
-                        /*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);*/
+                        *//*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);*//*
                     }
-                });
+                });*/
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+               /* builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface d, int arg1)
                     {
                         Intent intent = new Intent(LogInActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
-
                     }
-                }).show();
+                }).show();*/
             }
         }
 
@@ -232,7 +249,13 @@ public class LogInActivity extends AppCompatActivity
                         txtChange();
                     } 
                     else {
-                        signIn();
+                        if (Current_Location != null)
+                        {
+                            signIn();
+                        }
+                        else {
+                            Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
                 else {
@@ -265,11 +288,15 @@ public class LogInActivity extends AppCompatActivity
                         longitude = gps.getLongitude();
                         Current_Location=gps.getlocation_Address();
                         Log.i("Current_Location",Current_Location);
+                        if (Current_Location == null)
+                        {
+                            Current_Location = "";
+                        }
                     }
                     else
                     {
                         AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
-                        builder.setMessage("Enable GPS");
+                        builder.setMessage("Please Enable GPS");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
@@ -281,7 +308,7 @@ public class LogInActivity extends AppCompatActivity
                             }
                         });
 
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        /*builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface d, int arg1)
                             {
@@ -290,7 +317,7 @@ public class LogInActivity extends AppCompatActivity
                                 finish();
 
                             }
-                        }).show();
+                        }).show();*/
                     }
                 }
                 else
@@ -378,7 +405,6 @@ public class LogInActivity extends AppCompatActivity
                             URLEncoder.encode(Current_Location, "UTF-8"),
                             URLEncoder.encode("1", "UTF-8"));
 
-                    
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
 

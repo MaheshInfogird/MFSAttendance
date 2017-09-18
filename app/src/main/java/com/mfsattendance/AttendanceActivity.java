@@ -83,7 +83,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     CommonMethod.ScannerAction scannerAction = CommonMethod.ScannerAction.Capture;
 
     int minQuality = 40;
-    int timeout = 10000;
+    int timeout = 5000;//capture time out 10000
     MFS100 mfs100 = null;
 
     public static String _testKey = "t7L8wTG/iv02t+pgYrMQ7tt8qvU1z42nXpJDfAfsW592N4sKUHLd8A0MEV0GRxH+f4RgefEaMZALj7mgm/Thc0jNhR2CW9BZCTgeDPjC6q0W";
@@ -103,7 +103,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
     Toolbar toolbar;
     CoordinatorLayout snackbarCoordinatorLayout;
-    TextView txt_date, txt_time, txt_time_a, txt_result, txt_quality_per, txt_quality_success;
+    TextView txt_date, txt_time, txt_time_a, txt_result, txt_quality_per, txt_quality_success,
+        txt_empname;
     ImageView img_thumb_result, img_in_mark, img_out_mark;
     Button btn_signIn,btn_signOut;
     ProgressBar progress_quality;
@@ -114,6 +115,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     Handler someHandler;
     ConnectionDetector cd;
     UserSessionManager session;
+
     CheckInternetConnection internetConnection;
     public static NetworkChange receiver;
     DatabaseHandler db;
@@ -215,6 +217,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         txt_time = (TextView)findViewById(R.id.txt_att_time);
         txt_time_a = (TextView)findViewById(R.id.txt_att_time_a);
         txt_result = (TextView)findViewById(R.id.txt_att_result);
+        txt_empname = (TextView)findViewById(R.id.txt_att_name);
         txt_quality_per = (TextView)findViewById(R.id.txt_att_quality_per);
         txt_quality_success = (TextView)findViewById(R.id.txt_att_quality_success);
 
@@ -523,6 +526,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run()
                         {
+                            mfs100.StopCapture();
                             Log.i("start", "start");
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
@@ -546,6 +550,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run()
                         {
+                            mfs100.StopCapture();
                             Log.i("start", "start");
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
@@ -569,6 +574,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run()
                         {
+                            mfs100.StopCapture();
                             Log.i("start", "start");
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
@@ -592,34 +598,26 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run()
                         {
+                            mfs100.StopCapture();
                             Log.i("start", "start");
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                         }
                     }, 3000);
                 }
-                else if (str.contains("Error: -"))
+                else if (str.contains("Error: -1319(Capturing stopped)"))
                 {
                     txt_result.setText("");
-                    img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                    txt_quality_success.setVisibility(View.VISIBLE);
-                    txt_quality_success.setText(str);
                     txt_quality_per.setText("0%");
                     progress_quality.setProgress(0);
-                    img_in_mark.setVisibility(View.GONE);
-                    img_out_mark.setVisibility(View.GONE);
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            Log.i("start", "start");
-                            txt_quality_success.setVisibility(View.INVISIBLE);
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
-                        }
-                    }, 3000);
+                }
+                else if (str.contains("Error"))
+                {
+                    txt_result.setText("");
+                    txt_quality_per.setText("0%");
+                    progress_quality.setProgress(0);
+                    txt_quality_success.setVisibility(View.INVISIBLE);
+                    img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                 }
                 else {
                     txt_quality_success.setVisibility(View.INVISIBLE);
@@ -1261,18 +1259,27 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             if (ResponseCode.equals("1"))
                             {
                                 String firstName = jsonObj.getString("firstName");
-                                String lastName = jsonObj.getString("firstName");
-                                String empName = firstName + lastName;
 
                                 progressDialog.dismiss();
+                                img_in_mark.setVisibility(View.GONE);
+                                img_out_mark.setVisibility(View.GONE);
+                                txt_quality_per.setText("0%");
+                                progress_quality.setProgress(0);
+                                txt_empname.setVisibility(View.VISIBLE);
+                                txt_empname.setText(firstName);
                                 txt_result.setText(Message);
                                 txt_result.setTextColor(getColor(R.color.TextGreenColor));
-                                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
+                                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
                                 textToSpeech.speak("Welcome "+firstName, TextToSpeech.QUEUE_FLUSH, null);
                             }
                             else
                             {
                                 progressDialog.dismiss();
+                                img_in_mark.setVisibility(View.GONE);
+                                img_out_mark.setVisibility(View.GONE);
+                                txt_quality_per.setText("0%");
+                                progress_quality.setProgress(0);
+                                txt_empname.setVisibility(View.GONE);
                                 txt_result.setText(Message);
                                 txt_result.setTextColor(getColor(R.color.RedTextColor));
                                 img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1284,18 +1291,27 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             if (ResponseCode.equals("1"))
                             {
                                 String firstName = jsonObj.getString("firstName");
-                                String lastName = jsonObj.getString("firstName");
-                                String empName = firstName + lastName;
 
                                 progressDialog.dismiss();
+                                img_in_mark.setVisibility(View.GONE);
+                                img_out_mark.setVisibility(View.GONE);
+                                txt_quality_per.setText("0%");
+                                progress_quality.setProgress(0);
+                                txt_empname.setVisibility(View.VISIBLE);
+                                txt_empname.setText(firstName);
                                 txt_result.setText(Message);
                                 txt_result.setTextColor(getColor(R.color.TextGreenColor));
-                                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
+                                img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_green));
                                 textToSpeech.speak("Bye Bye "+firstName, TextToSpeech.QUEUE_FLUSH, null);
                             }
                             else
                             {
                                 progressDialog.dismiss();
+                                img_in_mark.setVisibility(View.GONE);
+                                img_out_mark.setVisibility(View.GONE);
+                                txt_quality_per.setText("0%");
+                                progress_quality.setProgress(0);
+                                txt_empname.setVisibility(View.GONE);
                                 txt_result.setText(Message);
                                 txt_result.setTextColor(getColor(R.color.RedTextColor));
                                 img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
@@ -1312,14 +1328,11 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             public void run()
                             {
                                 txt_result.setText("");
-                                txt_quality_per.setText("0%");
-                                progress_quality.setProgress(0);
-                                img_in_mark.setVisibility(View.GONE);
-                                img_out_mark.setVisibility(View.GONE);
+                                txt_empname.setText("");
                                 txt_quality_success.setVisibility(View.INVISIBLE);
                                 img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                             }
-                        }, 5000);
+                        }, 3000);
                     }
                     catch (JSONException e)
                     {
@@ -1394,7 +1407,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         Log.i("MFS_Log MATCHED!!", "MATCHED!!");
                                         makeAttendance();
                                         break;
-
                                     }
                                     else
                                     {
