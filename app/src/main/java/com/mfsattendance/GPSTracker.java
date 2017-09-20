@@ -149,7 +149,7 @@ public class GPSTracker extends Service
                 String address = addressList.get(0).getAddressLine(0);
                 Log.i("address", address);
                 String area = addressList.get(0).getAddressLine(1);
-                Log.i("area", area);
+                //Log.i("area", area);
                 String city = addressList.get(0).getAddressLine(2);
                 //Log.i("city", city);
                 CompleteAddress = address + ", " + area;

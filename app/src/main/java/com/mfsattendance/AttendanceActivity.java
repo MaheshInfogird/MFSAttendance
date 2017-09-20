@@ -98,13 +98,14 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     String ResponseCode, Message;
     String Url, url_http;
     String android_id, logo;
+    String empattDid, flag;
 
     int result_match = 0;
 
     Toolbar toolbar;
     CoordinatorLayout snackbarCoordinatorLayout;
     TextView txt_date, txt_time, txt_time_a, txt_result, txt_quality_per, txt_quality_success,
-        txt_empname;
+        txt_empname, txt_att_deviceid;
     ImageView img_thumb_result, img_in_mark, img_out_mark;
     Button btn_signIn,btn_signOut;
     ProgressBar progress_quality;
@@ -122,6 +123,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
     ArrayList<String> thumb_list = new ArrayList<String>();
     ArrayList<String> empId_list = new ArrayList<String>();
+    ArrayList<String> empattDid_arr = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -175,7 +177,9 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         if (internetConnection.hasConnection(AttendanceActivity.this))
         {
             //getThumbExpressionAll();
-            //getUserData();
+            flag = "2";
+            empattDid = "";
+            getUserData();
         }
         else
         {
@@ -220,6 +224,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         txt_empname = (TextView)findViewById(R.id.txt_att_name);
         txt_quality_per = (TextView)findViewById(R.id.txt_att_quality_per);
         txt_quality_success = (TextView)findViewById(R.id.txt_att_quality_success);
+        txt_att_deviceid = (TextView)findViewById(R.id.txt_att_deviceid);
 
         img_thumb_result = (ImageView)findViewById(R.id.img_thumb_result);
         img_in_mark = (ImageView)findViewById(R.id.img_in);
@@ -331,6 +336,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
     public void deviceData()
     {
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        txt_att_deviceid.setText(android_id);
 
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -775,11 +781,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             String response1;
 
             @Override
-            protected void onPreExecute() {
-                if (snackbar1 != null)
-                {
-                    snackbar1.dismiss();
-                }
+            protected void onPreExecute()
+            {
                 progressDialog = ProgressDialog.show(AttendanceActivity.this, "Please wait", "Getting Thumb data...", true);
                 progressDialog.show();
             }
@@ -790,9 +793,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 try
                 {
                     String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewise/?";
-                    String query3 = String.format("deviceid", URLEncoder.encode(android_id, "UTF-8"));
-                    //query3 = query3.replace("%2C+", ",");
-                    URL url = new URL(leave_url+query3);
+                    String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
+                            URLEncoder.encode(android_id, "UTF-8"),
+                            URLEncoder.encode(flag, "UTF-8"),
+                            URLEncoder.encode(empattDid, "UTF-8"));
+
+                    query3 = query3.replace("%2C+",",");
+                    URL url = new URL(leave_url + query3);
                     Log.i("url123", ""+ url);
 
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -801,9 +808,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     connection.setRequestMethod("GET");
                     connection.setUseCaches(false);
                     connection.setAllowUserInteraction(false);
-                    connection.setDoInput(true);
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
                     int responseCode = connection.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_OK)
@@ -829,29 +834,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             progressDialog.dismiss();
-                            //snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "Slow internet / Login to captive portal", Snackbar.LENGTH_INDEFINITE);
-                            snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
-
-                            Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar1.getView();
-                            TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-                            textView.setVisibility(View.INVISIBLE);
-                            LayoutInflater inflater = LayoutInflater.from(snackbar1.getContext());
-                            View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-                            TextView textV = (TextView) snackView.findViewById(R.id.snack_text);
-                            textV.setText("Slow internet / Login to captive portal");
-                            layout.addView(snackView, 0);
-                            layout.setBackgroundColor(getResources().getColor(R.color.RedTextColor));
-                            snackbar1.show();
-
-                            txt_result.setText("");
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_quality_success.setVisibility(View.INVISIBLE);
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
+
                     Log.e("SocketTimeoutException", e.toString());
                 }
                 catch (ConnectTimeoutException e)
@@ -862,29 +848,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             progressDialog.dismiss();
-                            //snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "Slow internet / Login to captive portal", Snackbar.LENGTH_INDEFINITE);
-                            snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
-
-                            Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar1.getView();
-                            TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-                            textView.setVisibility(View.INVISIBLE);
-                            LayoutInflater inflater = LayoutInflater.from(snackbar1.getContext());
-                            View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-                            TextView textV = (TextView) snackView.findViewById(R.id.snack_text);
-                            textV.setText("Slow internet / Login to captive portal");
-                            layout.addView(snackView, 0);
-                            layout.setBackgroundColor(getResources().getColor(R.color.RedTextColor));
-                            snackbar1.show();
-
-                            txt_result.setText("");
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_quality_success.setVisibility(View.INVISIBLE);
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
+
                     Log.e("ConnectTimeoutException", e.toString());
                 }
                 catch (Exception e)
@@ -895,27 +862,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             progressDialog.dismiss();
-                            //snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "Slow internet / Login to captive portal", Snackbar.LENGTH_INDEFINITE);
-                            snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
-
-                            Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar1.getView();
-                            TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-                            textView.setVisibility(View.INVISIBLE);
-                            LayoutInflater inflater = LayoutInflater.from(snackbar1.getContext());
-                            View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-                            TextView textV = (TextView) snackView.findViewById(R.id.snack_text);
-                            textV.setText("Slow internet / Login to captive portal");
-                            layout.addView(snackView, 0);
-                            layout.setBackgroundColor(getResources().getColor(R.color.RedTextColor));
-                            snackbar1.show();
-
-                            txt_result.setText("");
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
-                            img_in_mark.setVisibility(View.GONE);
-                            img_out_mark.setVisibility(View.GONE);
-                            txt_quality_success.setVisibility(View.INVISIBLE);
-                            img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+                            Toast.makeText(AttendanceActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("Exception", e.toString());
@@ -936,100 +883,84 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                     if (result.contains("<HTML><HEAD>"))
                     {
-                        //progressDialog.dismiss();
-                        snackbar1 = Snackbar.make(snackbarCoordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
-
-                        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar1.getView();
-                        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setVisibility(View.INVISIBLE);
-                        LayoutInflater inflater = LayoutInflater.from(snackbar1.getContext());
-                        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-                        TextView textV = (TextView) snackView.findViewById(R.id.snack_text);
-                        textV.setText("Please login to captive portal");
-                        layout.addView(snackView, 0);
-                        layout.setBackgroundColor(getResources().getColor(R.color.RedTextColor));
-                        snackbar1.show();
-
-                        txt_result.setText("");
-                        txt_quality_per.setText("0%");
-                        progress_quality.setProgress(0);
-                        img_in_mark.setVisibility(View.GONE);
-                        img_out_mark.setVisibility(View.GONE);
-                        txt_quality_success.setVisibility(View.INVISIBLE);
-                        img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+                        Toast.makeText(AttendanceActivity.this, "Login to captive portal", Toast.LENGTH_LONG).show();
                     }
                     else
                     {
                         if (myJson2.equals("[]"))
                         {
-                            Toast.makeText(AttendanceActivity.this, "No New Record Found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AttendanceActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
                             try
                             {
-                                //  {"uId":8,"firstName":"Abhijeet","lastName":"Paithane",
-                                // "cid":"Hrsaas6","mobile":"7066366244","Thumexp":["1Rk1SACAyMAAAAAEOAAABPAFiAMUAxQEAAAAoKICNAOHOAICJAQDRAECYA"]}
+                                // [{"empattDid":29,"uId":4,"firstName":"Amit","lastName":"Mhaske","cid":"Hrsaas2","mobile":"1202152102","status":"1","attendancetype":3,
                                 JSONArray jsonArray = new JSONArray(myJson2);
                                 Log.i("jsonArray123", "" + jsonArray);
+
+                                empattDid_arr.clear();
+
                                 for(int i=0; i <jsonArray.length(); i++)
                                 {
                                     JSONObject object = jsonArray.getJSONObject(i);
-                                    Log.i("object123", "" + object);
+                                    //Log.i("object123", "" + object);
 
                                     String get_status = object.getString("status");
-                                    Log.i("get_status",get_status);
+                                    //Log.i("get_status",get_status);
+
+                                    String empattDid = object.getString("empattDid");
+                                    //Log.i("empattDid",empattDid);
+
+                                    empattDid_arr.add(empattDid);
 
                                     if (get_status.equals("1"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        Log.i("get_uId",get_uId);
+                                        //Log.i("get_uId",get_uId);
                                         String get_firstName = object.getString("firstName");
-                                        Log.i("get_firstName",get_firstName);
+                                        //Log.i("get_firstName",get_firstName);
                                         String get_lastName = object.getString("lastName");
-                                        Log.i("get_lastName",get_lastName);
+                                        //Log.i("get_lastName",get_lastName);
                                         String get_cid = object.getString("cid");
-                                        Log.i("get_cid",get_cid);
+                                        //Log.i("get_cid",get_cid);
                                         String get_mobile = object.getString("mobile");
-                                        Log.i("get_mobile",get_mobile);
+                                        //Log.i("get_mobile",get_mobile);
 
                                         String get_attType = object.getString("attendancetype");
-                                        Log.i("get_attType",get_attType);
-
-                                        String get_applyshift = object.getString("applyshift");
-                                        Log.i("get_applyshift", get_applyshift);
+                                        //Log.i("get_attType",get_attType);
 
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
-                                        Log.i("thumbexpr1143",thumbexpr+"");
+                                        //Log.i("thumbexpr1143",thumbexpr+"");
 
                                         String t1="",t2="",t3="",t4="";
 
                                         for(int j = 0; j < thumbexpr.length(); j++)
                                         {
                                             JSONObject object_thumb = thumbexpr.getJSONObject(j);
-                                            Log.i("object_thumb", "" + object_thumb);
+                                            //Log.i("object_thumb", "" + object_thumb);
                                             String get_thumb = object_thumb.getString(j+1+"");
-                                            Log.i("get_thumb",get_thumb);
+                                            //Log.i("get_thumb",get_thumb);
 
                                             if(j+1 == 1)
                                             {
                                                 t1 = get_thumb;
-                                                Log.i("t1",t1);
+                                                //Log.i("t1",t1);
                                             }
                                             else if(j+1 == 2)
                                             {
                                                 t2 = get_thumb;
-                                                Log.i("t2",t2);
+                                                //Log.i("t2",t2);
                                             }
                                             else if(j+1 == 3)
                                             {
                                                 t3 = get_thumb;
-                                                Log.i("t3",t3);
+                                                //Log.i("t3",t3);
                                             }
                                             else if(j+1 == 4)
                                             {
                                                 t4 = get_thumb;
-                                                Log.i("t4",t4);
+                                                //Log.i("t4",t4);
                                             }
                                             else{
                                                 t1 = "";
@@ -1039,51 +970,51 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                         }
 
-                                        Log.i("Insert: ", "Inserting ..");
+                                        //Log.i("Insert: ", "Inserting ..");
                                         db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
                                     }
                                     else if (get_status.equals("2"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        Log.i("get_uId",get_uId);
+                                        //Log.i("get_uId",get_uId);
 
                                         String get_mobile = object.getString("mobile");
-                                        Log.i("get_mobile",get_mobile);
+                                        //Log.i("get_mobile",get_mobile);
 
                                         String get_attType = object.getString("attendancetype");
-                                        Log.i("get_attType",get_attType);
+                                        //Log.i("get_attType",get_attType);
 
                                         JSONArray thumbexpr = object.getJSONArray("Thumexp");
-                                        Log.i("thumbexpr1143",thumbexpr+"");
+                                        //Log.i("thumbexpr1143",thumbexpr+"");
 
                                         String t1="",t2="",t3="",t4="";
 
                                         for(int j = 0; j < thumbexpr.length(); j++)
                                         {
                                             JSONObject object_thumb = thumbexpr.getJSONObject(j);
-                                            Log.i("object_thumb", "" + object_thumb);
+                                            //Log.i("object_thumb", "" + object_thumb);
                                             String get_thumb = object_thumb.getString(j+1+"");
-                                            Log.i("get_thumb",get_thumb);
+                                            //Log.i("get_thumb",get_thumb);
 
                                             if(j+1 == 1)
                                             {
                                                 t1 = get_thumb;
-                                                Log.i("t1",t1);
+                                                //Log.i("t1",t1);
                                             }
                                             else if(j+1 == 2)
                                             {
                                                 t2 = get_thumb;
-                                                Log.i("t2",t2);
+                                                //Log.i("t2",t2);
                                             }
                                             else if(j+1 == 3)
                                             {
                                                 t3 = get_thumb;
-                                                Log.i("t3",t3);
+                                                //Log.i("t3",t3);
                                             }
                                             else if(j+1 == 4)
                                             {
                                                 t4 = get_thumb;
-                                                Log.i("t4",t4);
+                                                //Log.i("t4",t4);
                                             }
                                             else{
                                                 t1 = "";
@@ -1093,16 +1024,16 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                         }
 
-                                        Log.i("Insert: ", "Inserting ..");
+                                        //Log.i("Insert: ", "Inserting ..");
                                         db.UpdateContactAttType(new UserDetails_Model(t1,t2,t3,t4,get_attType), get_uId);
                                     }
                                     else if (get_status.equals("3"))
                                     {
                                         String get_uId = object.getString("uId");
-                                        Log.i("get_uId",get_uId);
+                                        //Log.i("get_uId",get_uId);
 
                                         String get_mobile = object.getString("mobile");
-                                        Log.i("get_mobile",get_mobile);
+                                        //Log.i("get_mobile",get_mobile);
 
                                         db.deleteContact(get_mobile);
                                     }
@@ -1110,14 +1041,21 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                                 Toast.makeText(AttendanceActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
 
-                                Log.i("Reading: ", "Reading all contacts..");
+                                //Log.i("Reading: ", "Reading all contacts..");
                                 List<UserDetails_Model> contacts = db.getAllContacts();
 
                                 for (UserDetails_Model cn : contacts)
                                 {
-                                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no()+ " ,Shift: " + cn.getShift();
+                                    String log = "PrimaryKey: "+cn.getPrimaryKey()+",uId: "+cn.getUid()+",cId: "+cn.getCid()+", Type: "+cn.getAttType()+" ,Name: " + cn.getFirstname() + " ,Phone: " + cn.getMobile_no();
                                     Log.i("Name: ", log);
                                 }
+
+                                flag = "2";
+                                empattDid = empattDid_arr.toString();
+                                empattDid = empattDid.substring(1, (empattDid.length() -1));
+                                Log.i("empattDid", empattDid);
+
+                                getUserData();
                             }
                             catch (JSONException e)
                             {

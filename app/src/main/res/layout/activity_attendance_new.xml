@@ -14,16 +14,39 @@
             layout="@layout/toolbar_att"
             android:id="@+id/toolbar_inner_att"/>
 
-        <!--Clock Start-->
         <LinearLayout
-            android:id="@+id/time_layout"
+            android:id="@+id/deviceid_layout"
             android:layout_below="@+id/toolbar_inner_att"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/txt_att_deviceid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tue, 04 Sep, 2017"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingRight="10dp"
+                android:textColor="@color/TextGreyColor"
+                android:gravity="right"/>
+
+        </LinearLayout>
+
+        <!--Clock Start-->
+        <LinearLayout
+            android:id="@+id/time_layout"
+            android:layout_below="@+id/deviceid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true">
 
             <TextView

@@ -403,12 +403,13 @@ public class MainActivity extends AppCompatActivity {
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
 
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s",
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode("", "UTF-8"),
-                            URLEncoder.encode("1", "UTF-8"));
+                            URLEncoder.encode("1", "UTF-8"),
+                            URLEncoder.encode("2", "UTF-8"));
 
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
@@ -697,9 +698,7 @@ public class MainActivity extends AppCompatActivity {
                     connection.setRequestMethod("GET");
                     connection.setUseCaches(false);
                     connection.setAllowUserInteraction(false);
-                    connection.setDoInput(true);
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
                     int responseCode = connection.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_OK)

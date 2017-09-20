@@ -143,10 +143,6 @@ public class LogInActivity extends AppCompatActivity
                 longitude = gps.getLongitude();
                 Current_Location = gps.getlocation_Address();
                 //Log.i("Current_Location",Current_Location);
-                if (Current_Location == null)
-                {
-                    Current_Location = "";
-                }
             }
             else
             {
@@ -288,10 +284,6 @@ public class LogInActivity extends AppCompatActivity
                         longitude = gps.getLongitude();
                         Current_Location=gps.getlocation_Address();
                         Log.i("Current_Location",Current_Location);
-                        if (Current_Location == null)
-                        {
-                            Current_Location = "";
-                        }
                     }
                     else
                     {
@@ -398,11 +390,12 @@ public class LogInActivity extends AppCompatActivity
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
                     
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s",
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(Current_Location, "UTF-8"),
+                            URLEncoder.encode("1", "UTF-8"),
                             URLEncoder.encode("1", "UTF-8"));
 
                     url = new URL(Transurl + query);
