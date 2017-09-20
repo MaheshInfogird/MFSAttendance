@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("SocketTimeoutException", e.toString());
@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("ConnectTimeoutException", e.toString());
@@ -464,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("Exception", e.toString());
@@ -724,10 +724,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run()
                         {
                             progressDialog.dismiss();
-
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+
                     Log.e("SocketTimeoutException", e.toString());
                 }
                 catch (ConnectTimeoutException e)
@@ -738,10 +738,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run()
                         {
                             progressDialog.dismiss();
-
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+
                     Log.e("ConnectTimeoutException", e.toString());
                 }
                 catch (Exception e)
@@ -752,10 +752,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run()
                         {
                             progressDialog.dismiss();
-
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+
                     Log.e("Exception", e.toString());
                 }
 

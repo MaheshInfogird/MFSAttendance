@@ -1242,9 +1242,38 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                         response = "";
                     }
                 }
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog.dismiss();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //progressDialog.dismiss();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                           // progressDialog.dismiss();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    Log.e("Exception", e.toString());
                 }
 
                 return response;
