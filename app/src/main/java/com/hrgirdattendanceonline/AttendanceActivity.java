@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -503,9 +505,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
-                    txt_quality_success.setText("Error :- Please press thumb properly");
-                    txt_quality_per.setText("0%");
-                    progress_quality.setProgress(0);
+                    txt_quality_success.setText("Please press thumb properly");
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
 
@@ -516,11 +516,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         public void run()
                         {
                             mfs100.StopCapture();
-                            Log.i("start", "start");
+                            txt_quality_per.setText("0%");
+                            progress_quality.setProgress(0);
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
+                            progress_quality.getProgressDrawable().setColorFilter(Color.DKGRAY, PorterDuff.Mode.DST);
                         }
-                    }, 3000);
+                    }, 2000);
                 }
                 else if (str.equalsIgnoreCase("No Device Connected"))
                 {
@@ -620,6 +622,14 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 {
                     int progress = Integer.parseInt(str);
                     progress_quality.setProgress(progress);
+                    if (progress < 40)
+                    {
+                        progress_quality.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.ADD);
+                    }
+                    else
+                    {
+                        progress_quality.getProgressDrawable().setColorFilter(Color.DKGRAY, PorterDuff.Mode.DST);
+                    }
                 }
                 catch (NumberFormatException e) {
                     Log.i(""," is not a number");
