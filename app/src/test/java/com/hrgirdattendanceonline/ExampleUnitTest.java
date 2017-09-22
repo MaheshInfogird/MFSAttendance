@@ -1,4 +1,4 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
 import org.junit.Test;
 

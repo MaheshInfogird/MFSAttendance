@@ -1,9 +1,7 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -35,7 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 import com.mantra.mfs100.FingerData;

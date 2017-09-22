@@ -1,4 +1,4 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -30,7 +29,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 import com.mantra.mfs100.FingerData;
@@ -43,8 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -56,7 +52,7 @@ import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class ResetThumbActivity extends AppCompatActivity implements MFS100Event {
+public class RegistrationActivity extends AppCompatActivity implements MFS100Event {
 
     byte[] Enroll_Template;
     byte[] Verify_Template;
@@ -88,10 +84,12 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     ProgressDialog progressDialog;
 
     String myJSON = null;
-    String RegisteredBase64_1 = null, RegisteredBase64_2 = null, RegisteredBase64_3 = null, RegisteredBase64_4 = null;
+    String RegisteredBase64_1 = null, RegisteredBase64_2 = null, RegisteredBase64_3, RegisteredBase64_4;
     String MobileNo;
-    String emp_id;
+    String emp_id, cid;
+    String emp_firstname, emp_lastname, attendancetype;
     String str_RegisteredThumbs;
+    String password;
     String logout_id = "0";
     String Url;
     String url_http;
@@ -102,9 +100,9 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     ImageView img_register1, img_register2, img_register3, img_register4;
     ImageView img_check1, img_check2, img_check3, img_check4;
     Button btn_ViewDetails;
-    LinearLayout reg_logout, progress_layout;
-    EditText ed_regLogout;
-    Button btn_regLogout, btn_resetThumb, btn_nextThumb;
+    LinearLayout reg_logout, res_logout, progress_layout;
+    EditText ed_regLogout, ed_resLogout;
+    Button btn_regLogout, btn_resetThumb, btn_resLogout, btn_nextThumb;
     Snackbar snackbar;
     CoordinatorLayout snackbarCoordinatorLayout;
 
@@ -116,13 +114,11 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.reset_thumb);
-
-        context = ResetThumbActivity.this.getApplicationContext();
+        setContentView(R.layout.activity_registration);
+        context = RegistrationActivity.this.getApplicationContext();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         mfsVer = Integer.parseInt(settings.getString("MFSVer", String.valueOf(mfsVer)));
-
         PubVar.sharedPrefernceDeviceMode = (SharedPreferences) context.getSharedPreferences(PubVar.strSpDeviceKey, Context.MODE_PRIVATE);
 
         mfs100 = new MFS100(this, mfsVer);
@@ -146,21 +142,21 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
         shared_pref = getSharedPreferences(MyPREFERENCES_url, MODE_PRIVATE);
         Url = (shared_pref.getString("url", ""));
 
-        if (internetConnection.hasConnection(ResetThumbActivity.this))
+        Initialisation();
+        deviceData();
+
+        if (internetConnection.hasConnection(RegistrationActivity.this))
         {
 
         }
         else {
-            internetConnection.showNetDisabledAlertToUser(ResetThumbActivity.this);
+            internetConnection.showNetDisabledAlertToUser(RegistrationActivity.this);
         }
-
-        Initialisation();
-        deviceData();
 
         if (getSupportActionBar() != null)
         {
             getSupportActionBar().setTitle("");
-            Header.setText("RESET THUMB");
+            Header.setText("THUMB REGISTRATION");
             img_logout.setVisibility(View.VISIBLE);
         }
 
@@ -186,12 +182,13 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             }
         };
 
+
         img_logout.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegistrationActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                 alertDialog.setTitle("Logout / Stop");
                 alertDialog.setMessage("Do you want to Logout / Stop capture");
                 alertDialog.setCancelable(true);
@@ -212,7 +209,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         session.logoutUser();
                         UnInitScanner();
 
-                        Intent intent = new Intent(ResetThumbActivity.this, MainActivity.class);
+                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -225,27 +222,31 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
     public void Initialisation()
     {
-        reg_logout = (LinearLayout)findViewById(R.id.reset_logout);
-        ed_regLogout = (EditText)findViewById(R.id.ed_reset_logout);
-        btn_regLogout = (Button)findViewById(R.id.btn_reset_logout);
-        snackbarCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.snackbarCoordinatorLayout_reset);
-        progress_layout = (LinearLayout)findViewById(R.id.progress_layout_reset_tmb);
+        reg_logout = (LinearLayout)findViewById(R.id.reg_logout);
+        ed_regLogout = (EditText)findViewById(R.id.ed_reg_logout);
+        btn_regLogout = (Button)findViewById(R.id.btn_reg_logout);
+        ed_resLogout = (EditText)findViewById(R.id.ed_res_logout);
+        btn_resLogout = (Button)findViewById(R.id.btn_res_logout);
+        snackbarCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.CoordinatorLayout_reg);
+        progress_layout = (LinearLayout)findViewById(R.id.progress_layout_tmbreg);
 
-        ed_MobNo = (EditText)findViewById(R.id.ed_reset_mobNo);
-        txt_empName = (TextView)findViewById(R.id.txt_reset_empName);
-        txt_empId = (TextView)findViewById(R.id.txt_reset_empId);
-        img_register1 = (ImageView)findViewById(R.id.img_reset_finger1);
-        img_register2 = (ImageView)findViewById(R.id.img_reset_finger2);
-        img_register3 = (ImageView)findViewById(R.id.img_reset_finger3);
-        img_register4 = (ImageView)findViewById(R.id.img_reset_finger4);
-        btn_ViewDetails = (Button)findViewById(R.id.btn_reset);
-        btn_resetThumb = (Button)findViewById(R.id.btn_reset_thumb1);
-        btn_nextThumb = (Button)findViewById(R.id.btn_reset_nxtthumb);
+        ed_MobNo = (EditText)findViewById(R.id.ed_register_mobNo);
+        txt_empName = (TextView)findViewById(R.id.txt_employeeName);
+        txt_empId = (TextView)findViewById(R.id.txt_employeeId);
+        img_register1 = (ImageView)findViewById(R.id.img_finger1);
+        img_register2 = (ImageView)findViewById(R.id.img_finger2);
+        img_register3 = (ImageView)findViewById(R.id.img_finger3);
+        img_register4 = (ImageView)findViewById(R.id.img_finger4);
+        btn_ViewDetails = (Button)findViewById(R.id.btn_ViewDetails);
+        btn_resetThumb = (Button)findViewById(R.id.btn_reset_thumb);
+        res_logout = (LinearLayout)findViewById(R.id.res_logout);
 
-        img_check1 = (ImageView)findViewById(R.id.imagecheckreset1);
-        img_check2 = (ImageView)findViewById(R.id.imagecheckreset2);
-        img_check3 = (ImageView)findViewById(R.id.imagecheckreset3);
-        img_check4 = (ImageView)findViewById(R.id.imagecheckreset4);
+        btn_nextThumb = (Button)findViewById(R.id.btn_reset_nxtthumb1);
+
+        img_check1 = (ImageView)findViewById(R.id.imagecheck1);
+        img_check2 = (ImageView)findViewById(R.id.imagecheck2);
+        img_check3 = (ImageView)findViewById(R.id.imagecheck3);
+        img_check4 = (ImageView)findViewById(R.id.imagecheck4);
 
         btn_ViewDetails.setOnClickListener(new View.OnClickListener()
         {
@@ -280,7 +281,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             RegisteredBase64_3 = null;
                             RegisteredBase64_4 = null;
                             str_RegisteredThumbs = "";
-                            //RegisteredThumbs.clear();
 
                             img_check1.setVisibility(View.INVISIBLE);
                             img_check2.setVisibility(View.INVISIBLE);
@@ -304,7 +304,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 }
                 else
                 {
-                    Toast.makeText(ResetThumbActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -319,8 +319,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                     if (RegisteredBase64_1 != null && RegisteredBase64_2 != null)
                     {
                         MobileNo = ed_MobNo.getText().toString();
-                        //str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2 + ", " + RegisteredBase64_3 + ", " + RegisteredBase64_4;
-
                         if (RegisteredBase64_3 != null && RegisteredBase64_4 != null)
                         {
                             str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2 + ", " + RegisteredBase64_3 + ", " + RegisteredBase64_4;
@@ -333,8 +331,8 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         {
                             str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2;
                         }
+                        thumbRegistration();
 
-                        resetThumbRegistration();
                         RegisteredThumbs = new ArrayList<String>();
                         RegisteredThumbs.clear();
                         RegisteredThumbs.add(RegisteredBase64_1);
@@ -347,11 +345,10 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         img_check2.setVisibility(View.INVISIBLE);
                         img_check3.setVisibility(View.INVISIBLE);
                         img_check4.setVisibility(View.INVISIBLE);
-
-                        //mfs100.StopCapture();
                     }
-                    else {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                    else
+                    {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegistrationActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                         alertDialog.setTitle("Please Register Minimum Two Thumbs");
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
@@ -364,11 +361,24 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 }
                 else
                 {
-                    Toast.makeText(ResetThumbActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
+        btn_nextThumb.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                mfs100.StopCapture();
+                if (RegisteredBase64_4 == null)
+                {
+                    scannerAction = CommonMethod.ScannerAction.Capture;
+                    StartSyncCapture();
+                }
+            }
+        });
 
         ed_MobNo.addTextChangedListener(new TextWatcher()
         {
@@ -385,12 +395,12 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
                 if (mobNo.length() > 9)
                 {
-                    Log.i("ed_MobNo", ed_MobNo.getText().toString());
+                    Log.i("ed_MobNo_9", ed_MobNo.getText().toString());
                 }
                 else
                 {
                     mfs100.StopCapture();
-                    Log.i("ed_MobNo", ed_MobNo.getText().toString());
+                    Log.i("ed_MobNo_else", ed_MobNo.getText().toString());
                 }
             }
 
@@ -401,14 +411,56 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             }
         });
 
-        btn_nextThumb.setOnClickListener(new View.OnClickListener() {
+        btn_resLogout.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-                mfs100.StopCapture();
-                if (RegisteredBase64_4 == null)
+            public void onClick(View v)
+            {
+                String PassWord = ed_resLogout.getText().toString();
+
+                if (PassWord.equals(password))
                 {
-                    scannerAction = CommonMethod.ScannerAction.Capture;
-                    StartSyncCapture();
+                    Intent intent = new Intent(RegistrationActivity.this, ResetThumbActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else
+                {
+                    ed_resLogout.setError("Please enter correct password");
+                }
+            }
+        });
+
+        btn_regLogout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String PassWord = ed_regLogout.getText().toString();
+
+                if (PassWord.equals(password))
+                {
+                    if (logout_id.equals("1"))
+                    {
+                        editor = pref.edit();
+                        editor.clear();
+                        editor.commit();
+                        session.logoutUser();
+                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(RegistrationActivity.this, AttendanceNew.class);
+                        AttendanceNew.logout_status = true;
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                else
+                {
+                    ed_regLogout.setError("Please enter correct password");
                 }
             }
         });
@@ -430,13 +482,10 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     public void deviceData()
     {
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         int version = Build.VERSION.SDK_INT;
         String versionRelease = Build.VERSION.RELEASE;
-
-        String Androidversion = manufacturer + model + version + versionRelease;
     }
 
     Handler handler2;
@@ -448,7 +497,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
         switch (v.getId())
         {
             case R.id.btnForLoop:
-                Toast.makeText(ResetThumbActivity.this,
+                Toast.makeText(RegistrationActivity.this,
                         "Loop for init->uninit->init... 500 times",
                         Toast.LENGTH_LONG).show();
                 i = 0;
@@ -463,7 +512,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             handler2.removeCallbacks(runnable);
                         }
                         else
-                        {
+                            {
                             if (i % 2 == 0)
                             {
                                 InitScanner();
@@ -495,7 +544,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 Log.i("info", "fail - "+(mfs100.GetErrorMsg(ret)));
             }
             else
-            {
+                {
                 SetTextonuiThread("Init success");
                 String info = "Serial: " + mfs100.GetDeviceInfo().SerialNo()
                         + " Make: " + mfs100.GetDeviceInfo().Make()
@@ -565,20 +614,16 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 public void run() {
                                     img_register1.setImageBitmap(bitmap);
                                     //img_register1.refreshDrawableState();
-                                    //img_check1.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
-                        else  if (RegisteredBase64_2 == null)
+                        else if (RegisteredBase64_2 == null)
                         {
                             img_register2.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     img_register2.setImageBitmap(bitmap);
                                     //img_register2.refreshDrawableState();
-                                    //img_check2.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -589,8 +634,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 public void run() {
                                     img_register3.setImageBitmap(bitmap);
                                     //img_register2.refreshDrawableState();
-                                    //img_check3.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -601,8 +644,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                                 public void run() {
                                     img_register4.setImageBitmap(bitmap);
                                     //img_register2.refreshDrawableState();
-                                    //img_check4.setVisibility(View.VISIBLE);
-
                                 }
                             });
                         }
@@ -708,8 +749,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     img_register1.setImageBitmap(bitmap);
                     //img_register1.refreshDrawableState();
-                    //img_check1.setVisibility(View.VISIBLE);
-
                 }
             });
         }
@@ -720,8 +759,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     img_register2.setImageBitmap(bitmap);
                     //img_register2.refreshDrawableState();
-                    //img_check2.setVisibility(View.VISIBLE);
-
                 }
             });
         }
@@ -732,8 +769,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     img_register3.setImageBitmap(bitmap);
                     //img_register2.refreshDrawableState();
-                    //img_check3.setVisibility(View.VISIBLE);
-
                 }
             });
         }
@@ -744,8 +779,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 public void run() {
                     img_register4.setImageBitmap(bitmap);
                     //img_register2.refreshDrawableState();
-                    //img_check4.setVisibility(View.VISIBLE);
-
                 }
             });
         }
@@ -768,10 +801,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check1.post(new Runnable() {
                     @Override
                     public void run() {
-                        //img_register1.setImageBitmap(bitmap);
-                        //img_register1.refreshDrawableState();
                         img_check1.setVisibility(View.VISIBLE);
-
                     }
                 });
             }
@@ -780,10 +810,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check2.post(new Runnable() {
                     @Override
                     public void run() {
-                       // img_register2.setImageBitmap(bitmap);
-                        //img_register2.refreshDrawableState();
                         img_check2.setVisibility(View.VISIBLE);
-
                     }
                 });
             }
@@ -792,10 +819,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check3.post(new Runnable() {
                     @Override
                     public void run() {
-                        //img_register3.setImageBitmap(bitmap);
-                        //img_register2.refreshDrawableState();
                         img_check3.setVisibility(View.VISIBLE);
-
                     }
                 });
             }
@@ -804,8 +828,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 img_check4.post(new Runnable() {
                     @Override
                     public void run() {
-                        //img_register4.setImageBitmap(bitmap);
-                        //img_register2.refreshDrawableState();
                         img_check4.setVisibility(View.VISIBLE);
                         btn_nextThumb.setBackgroundDrawable(getResources().getDrawable(R.drawable.login_button_disabled));
                         btn_nextThumb.setEnabled(false);
@@ -850,7 +872,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 RegisteredBase64_1 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
                 Log.i("RegisteredBase64_1", RegisteredBase64_1);
             }
-            else  if (RegisteredBase64_2 == null)
+            else if (RegisteredBase64_2 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
                 System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
@@ -877,32 +899,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 RegisteredBase64_4 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
                 Log.i("RegisteredBase64_4", RegisteredBase64_4);
             }
-
-            /*if (RegisteredBase64_1 != null && RegisteredBase64_2 != null)
-            {
-                MobileNo = ed_MobNo.getText().toString();
-                //str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2 + ", " + RegisteredBase64_3 + ", " + RegisteredBase64_4;
-                str_RegisteredThumbs = RegisteredBase64_1 + ", " + RegisteredBase64_2;
-                //progress_layout.setVisibility(View.VISIBLE);
-                resetThumbRegistration();
-                RegisteredThumbs = new ArrayList<String>();
-                RegisteredThumbs.clear();
-                RegisteredThumbs.add(RegisteredBase64_1);
-                RegisteredThumbs.add(RegisteredBase64_2);
-                //RegisteredThumbs.add(RegisteredBase64_3);
-                //RegisteredThumbs.add(RegisteredBase64_4);
-                Log.i("str_RegisteredThumbs", "" + str_RegisteredThumbs);
-
-            }*/
         }
-
-       /* WriteFile("Raw.raw", fingerData.RawData());
-        WriteFile("Bitmap.bmp", fingerData.FingerImage());
-        WriteFile("ISOTemplate.iso", fingerData.ISOTemplate());
-        WriteFile("ANSITemplate.ansi", fingerData.ANSITemplate());
-        WriteFile("ISOImage.iso", fingerData.ISOImage());
-        WriteFile("WSQ.wsq", fingerData.WSQImage());*/
-
     }
 
     @Override
@@ -934,7 +931,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             }
             else if (pid == 4101)
             {
-
                 //Added by Milan Sheth on 19-Dec-2016
                 String strDeviceMode = PubVar.sharedPrefernceDeviceMode.getString(PubVar.strSpDeviceKey, "public");
 
@@ -1005,7 +1001,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             Toast.makeText(this, err, Toast.LENGTH_LONG).show();
         }
         catch (Exception ex) {
-
         }
     }
 
@@ -1019,7 +1014,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             @Override
             protected void onPreExecute()
             {
-                progressDialog = ProgressDialog.show(ResetThumbActivity.this, "Please wait", "Getting Employee Details...", true);
+                progressDialog = ProgressDialog.show(RegistrationActivity.this, "Please wait", "Getting Employee Details...", true);
                 progressDialog.show();
             }
 
@@ -1028,8 +1023,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/resetempdetails/?";
-
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/empdetail/?";
                     String query = String.format("mobile=%s", URLEncoder.encode(MobileNo, "UTF-8"));
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
@@ -1062,7 +1056,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            Toast.makeText(ResetThumbActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("SocketTimeoutException", e.toString());
@@ -1073,7 +1067,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            Toast.makeText(ResetThumbActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("ConnectTimeoutException", e.toString());
@@ -1084,7 +1078,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run() {
                             progressDialog.dismiss();
-                            Toast.makeText(ResetThumbActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("Exception", e.toString());
@@ -1121,29 +1115,18 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
                         if (responsecode.equals("1"))
                         {
-                            String emp_firstname = object.getString("firstName");
-                            String emp_lastname = object.getString("lastName");
+                            emp_firstname = object.getString("firstName");
+                            emp_lastname = object.getString("lastName");
+                            attendancetype = object.getString("attendancetype");
                             String emp_name = emp_firstname + " " + emp_lastname;
                             emp_id = object.getString("uId");
-                            String cid = object.getString("cid");
+                            cid = object.getString("cid");
 
                             txt_empName.setText(emp_name);
                             txt_empId.setText(cid);
 
                             scannerAction = CommonMethod.ScannerAction.Capture;
                             StartSyncCapture();
-
-                            /*final Handler handler = new Handler();
-                            handler.postDelayed(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    Log.i("start", "start");
-                                    scannerAction = CommonMethod.ScannerAction.Capture;
-                                    StartSyncCapture();
-                                }
-                            }, 6000);*/
                         }
                         else if (responsecode.equals("2"))
                         {
@@ -1151,7 +1134,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             String message = msg.substring(2, msg.length()-2);
                             textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
 
-                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegistrationActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                             alertDialog.setTitle(message);
                             alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
@@ -1176,7 +1159,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
                             textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
 
-                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegistrationActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                             alertDialog.setTitle(message);
                             alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
@@ -1189,7 +1172,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         }
                     }
                     catch (JSONException e){
-                        Toast.makeText(ResetThumbActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegistrationActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
                         Log.e("Exception", e.toString());
                     }
                 }
@@ -1199,7 +1182,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
         getDataJSON.execute();
     }
 
-    public void resetThumbRegistration()
+    public void thumbRegistration()
     {
         class GetDataJSON extends AsyncTask<String, Void, String>
         {
@@ -1208,6 +1191,10 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
             @Override
             protected void onPreExecute() {
+                Log.i("onPreExecute","onPreExecute");
+                //progressDialog1 = ProgressDialog.show(RegistrationActivity.this, "Please wait", "Registering thumb...", true);
+                //progressDialog1.show();
+                //progress_layout.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -1215,9 +1202,12 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/resetthum/?";
+                    Log.i("doInBackground","doInBackground");
+                    //String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistration/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/thumregistrationnew/?";
+                    Log.i("Transurl", "" + Transurl);
 
-                    String query = String.format("empId=%s&thumexp=%s&deviceid=%s",
+                    String query = String.format("empId=%s&thumexp=%s&device_value=%s",
                             URLEncoder.encode(emp_id, "UTF-8"),
                             URLEncoder.encode(str_RegisteredThumbs, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"));
@@ -1253,7 +1243,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run() {
                             //progressDialog.dismiss();
-                            Toast.makeText(ResetThumbActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("SocketTimeoutException", e.toString());
@@ -1264,7 +1254,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run() {
                             //progressDialog.dismiss();
-                            Toast.makeText(ResetThumbActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("ConnectTimeoutException", e.toString());
@@ -1274,8 +1264,8 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // progressDialog.dismiss();
-                            Toast.makeText(ResetThumbActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
+                           // progressDialog.dismiss();
+                            Toast.makeText(RegistrationActivity.this, "Slow internet connection", Toast.LENGTH_SHORT).show();
                         }
                     });
                     Log.e("Exception", e.toString());
@@ -1291,19 +1281,20 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 Log.i("response", result);
 
                 //progress_layout.setVisibility(View.GONE);
+                //progressDialog1.dismiss();
 
                 if (response.equals("[]"))
                 {
-                    Toast.makeText(ResetThumbActivity.this, "Sorry... Data not available", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this, "Sorry... Data not available", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
-                    db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
-                    //Toast.makeText(ResetThumbActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
+                    db.addContact(new UserDetails_Model(null, emp_id, cid, attendancetype, emp_firstname, emp_lastname, MobileNo, RegisteredBase64_1, RegisteredBase64_2, RegisteredBase64_3, RegisteredBase64_4));
+                    //Toast.makeText(RegistrationActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
                     textToSpeech.speak("Thumbs Registered Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                    alertDialog.setTitle("Thumbs Updated Successfully");
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegistrationActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                    alertDialog.setTitle("Thumbs Registered Successfully");
                     alertDialog.setCancelable(false);
                     alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
@@ -1313,6 +1304,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                             img_register2.setImageResource(R.drawable.imagefinger);
                             img_register3.setImageResource(R.drawable.imagefinger);
                             img_register4.setImageResource(R.drawable.imagefinger);
+
                             txt_empName.setText("");
                             txt_empId.setText("");
                             ed_MobNo.setText("");
@@ -1334,12 +1326,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
     protected void onStop()
     {
-        //logout_id = "1";
-
-        //session.logoutUser();
-
         //UnInitScanner();
-
         super.onStop();
     }
 
@@ -1348,6 +1335,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
     {
         if (mfs100 != null) {
             mfs100.Dispose();
+            Log.i("Dispose", "Dispose");
         }
         super.onDestroy();
     }

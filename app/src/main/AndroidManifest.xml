@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mfsattendance">
+    package="com.hrgirdattendanceonline">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -18,15 +18,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name="com.hrgirdattendanceonline.MainActivity"
             android:windowSoftInputMode="stateHidden"/>
 
         <activity
-            android:name=".LogInActivity"
+            android:name="com.hrgirdattendanceonline.LogInActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
-            android:name=".UrlActivity"
+            android:name="com.hrgirdattendanceonline.UrlActivity"
             android:windowSoftInputMode="stateHidden" >
 
             <intent-filter>
@@ -36,16 +36,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AttendanceNew"
+        <activity android:name="com.hrgirdattendanceonline.AttendanceNew"
             android:windowSoftInputMode="stateAlwaysVisible"/>
 
-        <activity android:name=".AttendanceActivity"
+        <activity android:name="com.hrgirdattendanceonline.AttendanceActivity"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
-        <activity android:name=".RegistrationActivity"
+        <activity android:name="com.hrgirdattendanceonline.RegistrationActivity"
             android:windowSoftInputMode="stateAlwaysVisible"/>
 
-        <activity android:name=".ResetThumbActivity"
+        <activity android:name="com.hrgirdattendanceonline.ResetThumbActivity"
             android:windowSoftInputMode="stateAlwaysVisible"/>
     </application>
 

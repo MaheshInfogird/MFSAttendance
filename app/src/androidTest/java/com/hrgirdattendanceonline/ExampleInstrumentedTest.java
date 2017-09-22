@@ -1,4 +1,4 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

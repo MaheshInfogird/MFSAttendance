@@ -1,6 +1,5 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,14 +10,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -33,7 +28,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -336,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else
                         {
+                            pw.dismiss();
                             signIn();
                         }
                     }
@@ -401,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
 
                     String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),

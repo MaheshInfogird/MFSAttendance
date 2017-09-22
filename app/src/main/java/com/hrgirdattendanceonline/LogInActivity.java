@@ -1,21 +1,12 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,14 +35,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -388,7 +376,7 @@ public class LogInActivity extends AppCompatActivity
             {
                 try
                 {
-                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signIn/?";
+                    String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
                     
                     String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),

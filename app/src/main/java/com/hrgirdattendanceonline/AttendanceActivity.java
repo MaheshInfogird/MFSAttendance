@@ -1,21 +1,16 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
-import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -24,22 +19,14 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 import com.mantra.mfs100.FingerData;
@@ -53,10 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -69,7 +53,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -177,7 +160,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         if (internetConnection.hasConnection(AttendanceActivity.this))
         {
             //getThumbExpressionAll();
-            flag = "2";
+            flag = "1";
             empattDid = "";
             getUserData();
         }
@@ -1177,7 +1160,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                 if (result.equals(null))
                 {
-                    progressDialog.dismiss();
+
                     Toast.makeText(AttendanceActivity.this, "Sorry... Slow internet connection", Toast.LENGTH_LONG).show();
                 }
                 else

@@ -1,4 +1,4 @@
-package com.mfsattendance;
+package com.hrgirdattendanceonline;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
