@@ -541,6 +541,8 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                     FingerData fingerData = new FingerData();
                     //int ret = mfs100.AutoCapture(fingerData, timeout, true, false);
                     int ret = mfs100.StartCapture(minQuality, timeout, true);
+                    Log.i("ret", ""+ret);
+
                     if (ret != 0)
                     {
                         SetTextonuiThread(mfs100.GetErrorMsg(ret));
@@ -549,9 +551,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                     else
                     {
                         //bitmap = null;
-                        bitmap = BitmapFactory.decodeByteArray(
-                                fingerData.FingerImage(), 0,
-                                fingerData.FingerImage().length);
+                        bitmap = BitmapFactory.decodeByteArray(fingerData.FingerImage(), 0, fingerData.FingerImage().length);
                         Log.i("bitmap", ""+bitmap);
 
                         if (RegisteredBase64_1 == null)
@@ -1088,18 +1088,6 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
 
                             scannerAction = CommonMethod.ScannerAction.Capture;
                             StartSyncCapture();
-
-                            /*final Handler handler = new Handler();
-                            handler.postDelayed(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    Log.i("start", "start");
-                                    scannerAction = CommonMethod.ScannerAction.Capture;
-                                    StartSyncCapture();
-                                }
-                            }, 6000);*/
                         }
                         else if (responsecode.equals("2"))
                         {
@@ -1254,9 +1242,13 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 }
                 else
                 {
-                    db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
+                    if (db.checkEmpId(emp_id))
+                    {
+                        db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
+                    }
+
                     //Toast.makeText(ResetThumbActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
-                    textToSpeech.speak("Thumbs Registered Successfully!", TextToSpeech.QUEUE_FLUSH, null);
+                    textToSpeech.speak("Thumbs Updated Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                     alertDialog.setTitle("Thumbs Updated Successfully");

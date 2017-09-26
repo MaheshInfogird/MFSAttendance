@@ -68,6 +68,7 @@ public class GPSTracker extends Service
 
             if (!isGPSEnabled || !isNetworkEnabled)
             {
+                Log.d("GPS canGetLocation", "GPS canGetLocation");
                 this.canGetLocation = false;
                 // No network provider is enabled
             }
@@ -102,12 +103,12 @@ public class GPSTracker extends Service
                 {
                     if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     {
+                        Log.d("GPS Disabled", "GPS Disabled");
                         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 50);
                     }
                     else
                     {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, mLocationListener);
                         Log.d("GPS Enabled", "GPS Enabled");
 
@@ -147,9 +148,10 @@ public class GPSTracker extends Service
                 Log.i("address", address);
                 String area = addressList.get(0).getAddressLine(1);
                 //Log.i("area", area);
-                String city = addressList.get(0).getAddressLine(2);
+                //String city = addressList.get(0).getAddressLine(2);
+                String city = addressList.get(0).getLocality();
                 //Log.i("city", city);
-                CompleteAddress = address + ", " + area;
+                CompleteAddress = address + ", " + area +", "+city;
                 //Log.i("CompleteAddress1",""+address+area);
                  Log.i("CompleteAddress",""+CompleteAddress);
             }
@@ -187,14 +189,16 @@ public class GPSTracker extends Service
         }
     };
 
-    public double getLatitude(){
+    public double getLatitude()
+    {
         if(location != null){
             latitude = location.getLatitude();
         }
         return latitude;
     }
 
-    public double getLongitude(){
+    public double getLongitude()
+    {
         if(location != null){
             longitude = location.getLongitude();
         }
@@ -213,7 +217,8 @@ public class GPSTracker extends Service
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return null;
     }
 }

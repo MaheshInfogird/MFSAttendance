@@ -1,5 +1,6 @@
 package com.hrgirdattendanceonline;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +15,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     DatabaseHandler db;
     PopupWindow pw;
+    GPSTracker gps;
     
     String response_version, myJson1, myJson2, Url;
     String Packagename;
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     String UserName, Password;
     String android_id, outid;
     String empattDid, flag;
+    String Current_Location;
     
     int version_code;
     
@@ -77,7 +82,11 @@ public class MainActivity extends AppCompatActivity {
     EditText ed_userName, ed_password;
     Button btn_login, btn_Cancel;
 
+    boolean check = false;
+
     ArrayList<String> empattDid_arr = new ArrayList<String>();
+
+    Double latitude = 0.0, longitude = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -103,14 +112,47 @@ public class MainActivity extends AppCompatActivity {
 
         Initialization();
         deviceData();
-        if (internetConnection.hasConnection(MainActivity.this))
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
         {
-            flag = "1";
-            empattDid = "";
-            getUserData();
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
-        else {
-            Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
+        else
+        {
+            gps = new GPSTracker(getApplicationContext(), MainActivity.this);
+            if (gps.canGetLocation())
+            {
+                latitude = gps.getLatitude();
+                longitude = gps.getLongitude();
+                Current_Location = gps.getlocation_Address();
+                if (internetConnection.hasConnection(MainActivity.this))
+                {
+                    /*flag = "1";
+                    empattDid = "";
+                    getUserData();*/
+                    getCheckVersion();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else
+            {
+                Log.i("Current_Location","Current_Location");
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                alertDialog.setMessage("Please Enable GPS");
+                alertDialog.setCancelable(true);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alertDialog.show();
+            }
         }
     }
 
@@ -266,6 +308,61 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("requestCode",""+requestCode );//1
+
+        switch (requestCode)
+        {
+            case 1:
+            {
+                Log.i("grantResults",""+grantResults.length );
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                {
+                    Log.i("grantResults_in",""+grantResults.length );
+                    gps = new GPSTracker(getApplicationContext(), MainActivity.this);
+
+                    if (gps.canGetLocation())
+                    {
+                        latitude = gps.getLatitude();
+                        longitude = gps.getLongitude();
+                        Current_Location = gps.getlocation_Address();
+                        if (internetConnection.hasConnection(MainActivity.this))
+                        {
+                            /*flag = "1";
+                            empattDid = "";
+                            getUserData();*/
+                            getCheckVersion();
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else
+                    {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                        alertDialog.setMessage("Please Enable GPS");
+                        alertDialog.setCancelable(true);
+                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        alertDialog.show();
+                    }
+                }
+                else
+                {
+                    Log.i("grantResults_else",""+grantResults.length );
+                }
+                return;
+            }
+        }
     }
 
     public void popup_window(View v)
@@ -541,7 +638,10 @@ public class MainActivity extends AppCompatActivity {
         class GetCheckVersion extends AsyncTask<String, Void, String>
         {
             @Override
-            protected void onPreExecute() {
+            protected void onPreExecute()
+            {
+                progressDialog = ProgressDialog.show(MainActivity.this, "Please wait", "Getting Thumb data...", true);
+                progressDialog.show();
             }
 
             @Override
@@ -551,7 +651,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getversion/?";
 
-                    String query3 = String.format("apptype=%s", URLEncoder.encode("1", "UTF-8"));
+                    String query3 = String.format("apptype=%s", URLEncoder.encode("5", "UTF-8"));
                     URL url = new URL(leave_url + query3);
                     Log.i("url", ""+ url);
 
@@ -581,7 +681,41 @@ public class MainActivity extends AppCompatActivity {
                         response_version = "";
                     }
                 }
-                catch (Exception e){
+                catch (SocketTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("SocketTimeoutException", e.toString());
+                }
+                catch (ConnectTimeoutException e)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    Log.e("ConnectTimeoutException", e.toString());
+                }
+                catch (Exception e)
+                {
+                    if (progressDialog != null && progressDialog.isShowing())
+                    {
+                        progressDialog.dismiss();
+                        Toast.makeText(MainActivity.this, "Slow internet / Login to captive portal", Toast.LENGTH_SHORT).show();
+                    }
                     Log.e("Exception", e.toString());
                 }
 
@@ -598,6 +732,10 @@ public class MainActivity extends AppCompatActivity {
 
                     if (myJson1.equals("[]"))
                     {
+                        if (progressDialog != null && progressDialog.isShowing())
+                        {
+                            progressDialog.dismiss();
+                        }
                         Toast.makeText(MainActivity.this, "Sorry... Data not available", Toast.LENGTH_LONG).show();
                     }
                     else
@@ -621,7 +759,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.hrgirdadmin&hl=en"));
+                                        intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.hrgirdattendanceonline"));
                                         startActivity(intent);
                                         finish();
                                     }
@@ -642,15 +780,28 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else
                             {
+                                check = true;
+                                flag = "1";
+                                empattDid = "";
                                 getUserData();
                             }
                         }
-                        catch (JSONException e) {
+                        catch (JSONException e)
+                        {
+                            if (progressDialog != null && progressDialog.isShowing())
+                            {
+                                progressDialog.dismiss();
+                            }
                             Log.e("JsonException", e.toString());
                         }
                     }
                 }
-                else {
+                else
+                {
+                    if (progressDialog != null && progressDialog.isShowing())
+                    {
+                        progressDialog.dismiss();
+                    }
                     Toast.makeText(MainActivity.this, "Sorry...Bad internet connection", Toast.LENGTH_LONG).show();
                 }
             }
@@ -667,9 +818,13 @@ public class MainActivity extends AppCompatActivity {
             String response1;
 
             @Override
-            protected void onPreExecute() {
-                progressDialog = ProgressDialog.show(MainActivity.this, "Please wait", "Getting Thumb data...", true);
-                progressDialog.show();
+            protected void onPreExecute()
+            {
+                if (!check)
+                {
+                    progressDialog = ProgressDialog.show(MainActivity.this, "Please wait", "Getting Thumb data...", true);
+                    progressDialog.show();
+                }
             }
 
             @Override
@@ -765,17 +920,23 @@ public class MainActivity extends AppCompatActivity {
                     myJson2 = result;
                     Log.i("myJson", myJson2);
 
-                    progressDialog.dismiss();
-
                     if (result.contains("<HTML><HEAD>"))
                     {
+                        if (progressDialog != null && progressDialog.isShowing())
+                        {
+                            progressDialog.dismiss();
+                        }
                         Toast.makeText(MainActivity.this, "Login to captive portal", Toast.LENGTH_LONG).show();
                     }
                     else
                     {
                         if (myJson2.equals("[]"))
                         {
-                            Toast.makeText(MainActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
+                            if (progressDialog != null && progressDialog.isShowing())
+                            {
+                                progressDialog.dismiss();
+                            }
+                            Toast.makeText(MainActivity.this, "No New Records", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
@@ -936,6 +1097,12 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i("Name: ", log);
                                 }
 
+                                if (progressDialog != null && progressDialog.isShowing())
+                                {
+                                    progressDialog.dismiss();
+                                }
+
+                                check = false;
                                 flag = "2";
                                 empattDid = empattDid_arr.toString();
                                 empattDid = empattDid.substring(1, (empattDid.length() -1));

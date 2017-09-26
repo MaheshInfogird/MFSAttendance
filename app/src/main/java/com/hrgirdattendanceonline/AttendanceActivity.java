@@ -268,6 +268,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 img_out_mark.setVisibility(View.GONE);
                 if (internetConnection.hasConnection(AttendanceActivity.this))
                 {
+                    btn_signIn.setEnabled(false);
+                    btn_signOut.setEnabled(false);
                     mfs100.StopCapture();
                     scannerAction = CommonMethod.ScannerAction.Capture;
                     StartSyncCapture();
@@ -288,6 +290,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 img_out_mark.setVisibility(View.VISIBLE);
                 if (internetConnection.hasConnection(AttendanceActivity.this))
                 {
+                    btn_signIn.setEnabled(false);
+                    btn_signOut.setEnabled(false);
                     mfs100.StopCapture();
                     scannerAction = CommonMethod.ScannerAction.Capture;
                     StartSyncCapture();
@@ -492,22 +496,31 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
     private void SetTextonuiThread(final String str)
     {
-        txt_quality_per.post(new Runnable() {
-            public void run() {
+        txt_quality_per.post(new Runnable()
+        {
+            public void run()
+            {
                 if (str.equalsIgnoreCase("Capture Success"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     txt_quality_success.setVisibility(View.INVISIBLE);
                     txt_quality_success.setText(str);
                 }
                 else if (str.equalsIgnoreCase("Error: -1140(Timeout)"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
                     txt_quality_success.setText("Please press thumb properly");
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
+                    mfs100.StopCapture();
+                    txt_quality_per.setText("0%");
+                    progress_quality.setProgress(0);
 
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable()
@@ -515,9 +528,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         @Override
                         public void run()
                         {
-                            mfs100.StopCapture();
-                            txt_quality_per.setText("0%");
-                            progress_quality.setProgress(0);
                             txt_quality_success.setVisibility(View.INVISIBLE);
                             img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                             progress_quality.getProgressDrawable().setColorFilter(Color.DKGRAY, PorterDuff.Mode.DST);
@@ -526,6 +536,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.equalsIgnoreCase("No Device Connected"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -550,6 +562,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.equalsIgnoreCase("Permission denied"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -574,6 +588,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.equalsIgnoreCase("Device removed"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
                     txt_quality_success.setVisibility(View.VISIBLE);
@@ -598,6 +614,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 }
                 else if (str.contains("Error: -1319(Capturing stopped)"))
                 {
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
                     txt_result.setText("");
                     txt_quality_per.setText("0%");
                     progress_quality.setProgress(0);
@@ -610,7 +628,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     txt_quality_success.setVisibility(View.INVISIBLE);
                     img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_black));
                 }
-                else {
+                else
+                {
                     txt_quality_success.setVisibility(View.INVISIBLE);
                     txt_quality_per.setText(str+"%");
                 }
@@ -674,7 +693,8 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             //matchThumb(fingerData);
             MatchThumbByDB(fingerData);
         }
-        else {
+        else
+        {
             SetTextonuiThread("Error: " + errorCode + "(" + errorMsg + ")");
         }
     }
@@ -882,7 +902,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                     {
                         if (myJson2.equals("[]"))
                         {
-                            Toast.makeText(AttendanceActivity.this, "No New Records Found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AttendanceActivity.this, "No New Records", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
@@ -1168,10 +1188,13 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 myJSON = result;
                 Log.i("response", result);
 
-                if (result.equals(null))
-                {
+                btn_signIn.setEnabled(true);
+                btn_signOut.setEnabled(true);
 
-                    Toast.makeText(AttendanceActivity.this, "Sorry... Slow internet connection", Toast.LENGTH_LONG).show();
+                if (result == null)
+                {
+                    progressDialog.dismiss();
+                    Toast.makeText(AttendanceActivity.this, "Slow internet connection", Toast.LENGTH_LONG).show();
                 }
                 else
                 {
@@ -1285,15 +1308,16 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             @Override
             public void run()
             {
-                String  uid = "", ufname = "", ulname = "";
                 List<UserDetails_Model> contacts = db.getAllContacts();
                 Log.i("MFS_Log contacts", "" + contacts);
                 result_match = 0;
 
-                for (UserDetails_Model cn : contacts)
+                /*for (UserDetails_Model cn : contacts)
                 {
-                    Log.i("thumb_reg", cn.getThumb1()+", \n"+cn.getThumb2()+", \n"+cn.getThumb3()+", \n"+cn.getThumb4());
-                }
+                    Log.i("thumb_reg", cn.getThumb1()+", \n"+cn.getThumb2()+
+                            ", \n"+cn.getThumb3()+", \n"+cn.getThumb4());
+                }*/
+
                 for (UserDetails_Model cn : contacts)
                 {
                     if (result_match < 1400)
@@ -1302,9 +1326,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         String t2 = cn.getThumb2();
                         String t3 = cn.getThumb3();
                         String t4 = cn.getThumb4();
-
-                        ufname = cn.getFirstname();
-                        ulname = cn.getLastname();
 
                         String thumbs[] = {t1, t2, t3, t4};
                         Log.i("thumbs",""+  Arrays.toString(thumbs));
@@ -1355,14 +1376,18 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                 if (result_match < 1400)
                 {
-                    txt_result.setText("Sorry thumb not matched");
-                    img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
-                    textToSpeech.speak("Sorry thumb not matched!!", TextToSpeech.QUEUE_FLUSH, null);
-                    Log.i("MFS_Log NOT MATCHED!!", "NOT MATCHED!!");
+                    btn_signIn.setEnabled(true);
+                    btn_signOut.setEnabled(true);
+
                     img_in_mark.setVisibility(View.GONE);
                     img_out_mark.setVisibility(View.GONE);
                     txt_quality_per.setText("0%");
                     progress_quality.setProgress(0);
+                    txt_result.setText("Sorry thumb not matched");
+                    txt_result.setTextColor(getColor(R.color.RedTextColor));
+                    img_thumb_result.setImageDrawable(getDrawable(R.drawable.thumb_red));
+                    textToSpeech.speak("Sorry thumb not matched!!", TextToSpeech.QUEUE_FLUSH, null);
+                    Log.i("THUMB NOT MATCHED!!", "THUMB NOT MATCHED!!");
 
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable()

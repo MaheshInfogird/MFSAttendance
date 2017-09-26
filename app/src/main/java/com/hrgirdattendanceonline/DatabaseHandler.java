@@ -213,4 +213,22 @@ public class DatabaseHandler extends SQLiteOpenHelper
         }
         return contact;
     }
+
+    public boolean checkEmpId(String uId)
+    {
+        String sql = "SELECT "+ KEY_ID+" FROM "+TABLE_User_Details+" WHERE "+ KEY_ID+"="+uId;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(sql,null);
+
+        if(cursor.getCount() > 0)
+        {
+            cursor.close();
+            return true;
+        }
+        else
+        {
+            cursor.close();
+            return false;
+        }
+    }
 }

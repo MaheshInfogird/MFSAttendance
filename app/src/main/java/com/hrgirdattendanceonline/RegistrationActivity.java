@@ -594,6 +594,8 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                     FingerData fingerData = new FingerData();
                     //int ret = mfs100.AutoCapture(fingerData, timeout, true, false);
                     int ret = mfs100.StartCapture(minQuality, timeout, true);
+                    Log.i("ret", ""+ret);
+
                     if (ret != 0)
                     {
                         SetTextonuiThread(mfs100.GetErrorMsg(ret));
@@ -856,8 +858,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             if (RegisteredBase64_1 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
 
                 RegisteredBase64_1 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
                 Log.i("RegisteredBase64_1", RegisteredBase64_1);
@@ -865,8 +866,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             else if (RegisteredBase64_2 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
 
                 RegisteredBase64_2 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
                 Log.i("RegisteredBase64_2", RegisteredBase64_2);
@@ -874,8 +874,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             else  if (RegisteredBase64_3 == null)
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
 
                 RegisteredBase64_3 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
                 Log.i("RegisteredBase64_3", RegisteredBase64_3);
@@ -883,8 +882,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
             else
             {
                 Enroll_Template = new byte[fingerData.ISOTemplate().length];
-                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0,
-                        fingerData.ISOTemplate().length);
+                System.arraycopy(fingerData.ISOTemplate(), 0, Enroll_Template, 0, fingerData.ISOTemplate().length);
 
                 RegisteredBase64_4 = android.util.Base64.encodeToString(Enroll_Template, android.util.Base64.NO_WRAP);
                 Log.i("RegisteredBase64_4", RegisteredBase64_4);
