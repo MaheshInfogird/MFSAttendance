@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             gps = new GPSTracker(getApplicationContext(), MainActivity.this);
-            if (gps.canGetLocation())
-            {
+            /*if (gps.canGetLocation())
+            {*/
                 latitude = gps.getLatitude();
                 longitude = gps.getLongitude();
                 Current_Location = gps.getlocation_Address();
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
                 }
-            }
+            /*}
             else
             {
                 Log.i("Current_Location","Current_Location");
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 alertDialog.show();
-            }
+            }*/
         }
     }
 
@@ -325,8 +325,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("grantResults_in",""+grantResults.length );
                     gps = new GPSTracker(getApplicationContext(), MainActivity.this);
 
-                    if (gps.canGetLocation())
-                    {
+                    /*if (gps.canGetLocation())
+                    {*/
                         latitude = gps.getLatitude();
                         longitude = gps.getLongitude();
                         Current_Location = gps.getlocation_Address();
@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
                         else {
                             Toast.makeText(MainActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
                         }
-                    }
+                   /* }
                     else
                     {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                         alertDialog.show();
-                    }
+                    }*/
                 }
                 else
                 {
@@ -495,13 +495,14 @@ public class MainActivity extends AppCompatActivity {
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
 
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s&offline_flag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode("", "UTF-8"),
                             URLEncoder.encode("1", "UTF-8"),
-                            URLEncoder.encode("2", "UTF-8"));
+                            URLEncoder.encode("2", "UTF-8"),
+                            URLEncoder.encode("0", "UTF-8"));
 
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
@@ -622,7 +623,8 @@ public class MainActivity extends AppCompatActivity {
                             alertDialog.show();
                         }
                     }
-                    catch (JSONException e){
+                    catch (JSONException e)
+                    {
                         progressDialog.dismiss();
                         Log.i("Exception", e.toString());
                     }
@@ -833,10 +835,11 @@ public class MainActivity extends AppCompatActivity {
                 try
                 {
                     String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewise/?";
-                    String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
+                    String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s&offline_flag=%s",
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(flag, "UTF-8"),
-                            URLEncoder.encode(empattDid, "UTF-8"));
+                            URLEncoder.encode(empattDid, "UTF-8"),
+                            URLEncoder.encode("0", "UTF-8"));
 
                     query3 = query3.replace("%2C+",",");
                     URL url = new URL(leave_url+query3);
@@ -1072,7 +1075,10 @@ public class MainActivity extends AppCompatActivity {
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.UpdateContactAttType(new UserDetails_Model(t1,t2,t3,t4,get_attType), get_uId);
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType), get_uId);
+                                        }
                                     }
                                     else if (get_status.equals("3"))
                                     {
@@ -1081,8 +1087,10 @@ public class MainActivity extends AppCompatActivity {
 
                                         String get_mobile = object.getString("mobile");
                                         //Log.i("get_mobile",get_mobile);
-
-                                        db.deleteContact(get_mobile);
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.deleteContact(get_mobile);
+                                        }
                                     }
                                 }
 

@@ -122,6 +122,10 @@ public class LogInActivity extends AppCompatActivity
         latitude = gps.getLatitude();
         longitude = gps.getLongitude();
         Current_Location = gps.getlocation_Address();
+        if (Current_Location == null)
+        {
+            Current_Location = "";
+        }
 
         /*if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
@@ -214,13 +218,13 @@ public class LogInActivity extends AppCompatActivity
                         txtChange();
                     } 
                     else {
-                        if (Current_Location != null)
-                        {
+                        /*if (Current_Location != null)
+                        {*/
                             signIn();
-                        }
+                        /*}
                         else {
                             Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
-                        }
+                        }*/
                     }
                 }
                 else {
@@ -251,8 +255,12 @@ public class LogInActivity extends AppCompatActivity
                     {
                         latitude = gps.getLatitude();
                         longitude = gps.getLongitude();
-                        Current_Location=gps.getlocation_Address();
+                        Current_Location = gps.getlocation_Address();
                         //Log.i("Current_Location",Current_Location);
+                        if (Current_Location == null)
+                        {
+                            Current_Location = "";
+                        }
                     }
                     else
                     {
@@ -346,13 +354,14 @@ public class LogInActivity extends AppCompatActivity
                 {
                     String Transurl = ""+url_http+""+Url+"/owner/hrmapi/signInwithdeviceid/?";
                     
-                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s",
+                    String query = String.format("email=%s&password=%s&android_devide_id=%s&devicelocation=%s&signinby=%s&logoutflag=%s&offline_flag=%s",
                             URLEncoder.encode(UserName, "UTF-8"),
                             URLEncoder.encode(Password, "UTF-8"),
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(Current_Location, "UTF-8"),
                             URLEncoder.encode("1", "UTF-8"),
-                            URLEncoder.encode("1", "UTF-8"));
+                            URLEncoder.encode("1", "UTF-8"),
+                            URLEncoder.encode("0", "UTF-8"));
 
                     url = new URL(Transurl + query);
                     Log.i("url", "" + url);
