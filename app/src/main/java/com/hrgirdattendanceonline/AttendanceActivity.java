@@ -810,11 +810,10 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 try
                 {
                     String leave_url = ""+url_http+""+Url+"/owner/hrmapi/getallempdatadevicewise/?";
-                    String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s&offline_flag=%s",
+                    String query3 = String.format("deviceid=%s&flag=%s&empdevicearr=%s",
                             URLEncoder.encode(android_id, "UTF-8"),
                             URLEncoder.encode(flag, "UTF-8"),
-                            URLEncoder.encode(empattDid, "UTF-8"),
-                            URLEncoder.encode("0", "UTF-8"));
+                            URLEncoder.encode(empattDid, "UTF-8"));
 
                     query3 = query3.replace("%2C+",",");
                     URL url = new URL(leave_url + query3);

@@ -118,7 +118,7 @@ public class UrlActivity extends AppCompatActivity {
                         Toast.makeText(UrlActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
                     }
                 }
-                else
+                /*else
                 {
                     Log.i("Current_Location","Current_Location");
 
@@ -133,7 +133,7 @@ public class UrlActivity extends AppCompatActivity {
                     });
 
                     alertDialog.show();
-                }
+                }*/
             }
         }
 
@@ -213,7 +213,7 @@ public class UrlActivity extends AppCompatActivity {
                             Toast.makeText(UrlActivity.this, "Please check internet connection", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    else
+                   /* else
                     {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(UrlActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                         alertDialog.setMessage("Please Enable GPS");
@@ -226,7 +226,7 @@ public class UrlActivity extends AppCompatActivity {
                         });
 
                         alertDialog.show();
-                    }
+                    }*/
                 }
                 else
                 {
