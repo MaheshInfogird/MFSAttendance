@@ -219,7 +219,8 @@ public class LogInActivity extends AppCompatActivity
                         ed_password.setError("Please enter password");
                         txtChange();
                     } 
-                    else {
+                    else
+                    {
                         /*if (Current_Location != null)
                         {*/
                             signIn();
@@ -264,7 +265,7 @@ public class LogInActivity extends AppCompatActivity
                             Current_Location = "";
                         }
                     }
-                    else
+                    /*else
                     {
                         AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
                         builder.setMessage("Please Enable GPS");
@@ -276,7 +277,7 @@ public class LogInActivity extends AppCompatActivity
                                 d.dismiss();
                             }
                         });
-                    }
+                    }*/
                 }
                 else
                 {
