@@ -695,7 +695,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
             //getThumbExpression(fingerData);
             //matchThumb(fingerData);
-            MatchThumbByDB(fingerData);
+            MatchThumb(fingerData);
         }
         else
         {
@@ -1103,7 +1103,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
         getUrlData.execute();
     }
 
-    public void MatchThumbByDB(final FingerData fingerData)
+    public void MatchThumb(final FingerData fingerData)
     {
         runOnUiThread(new Runnable()
         {
@@ -1114,12 +1114,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                 Log.i("MFS_Log contacts", "" + contacts);
 
                 result_match = 0;
-
-                /*for (UserDetails_Model cn : contacts)
-                {
-                    Log.i("thumb_reg", cn.getThumb1()+", \n"+cn.getThumb2()+
-                            ", \n"+cn.getThumb3()+", \n"+cn.getThumb4());
-                }*/
 
                 for (UserDetails_Model cn : contacts)
                 {
@@ -1324,11 +1318,12 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                         if (Sign_InOut_id.equals("1"))
                         {
+                            progressDialog.dismiss();
+
                             if (ResponseCode.equals("1"))
                             {
                                 String firstName = jsonObj.getString("firstName");
 
-                                progressDialog.dismiss();
                                 img_in_mark.setVisibility(View.GONE);
                                 img_out_mark.setVisibility(View.GONE);
                                 txt_quality_per.setText("0%");
@@ -1342,7 +1337,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             }
                             else
                             {
-                                progressDialog.dismiss();
                                 img_in_mark.setVisibility(View.GONE);
                                 img_out_mark.setVisibility(View.GONE);
                                 txt_quality_per.setText("0%");
@@ -1356,11 +1350,11 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                         }
                         else if (Sign_InOut_id.equals("2"))
                         {
+                            progressDialog.dismiss();
                             if (ResponseCode.equals("1"))
                             {
                                 String firstName = jsonObj.getString("firstName");
 
-                                progressDialog.dismiss();
                                 img_in_mark.setVisibility(View.GONE);
                                 img_out_mark.setVisibility(View.GONE);
                                 txt_quality_per.setText("0%");
@@ -1374,7 +1368,6 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                             }
                             else
                             {
-                                progressDialog.dismiss();
                                 img_in_mark.setVisibility(View.GONE);
                                 img_out_mark.setVisibility(View.GONE);
                                 txt_quality_per.setText("0%");
