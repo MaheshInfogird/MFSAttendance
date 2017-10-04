@@ -990,7 +990,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
+                                        db.addEmpData(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
                                     }
                                     else if (get_status.equals("2"))
                                     {
@@ -1045,7 +1045,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
 
                                         //Log.i("Insert: ", "Inserting ..");
                                         if (db.checkEmpId(get_uId)) {
-                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType), get_uId);
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType), get_uId);
                                         }
                                     }
                                     else if (get_status.equals("3"))
@@ -1056,7 +1056,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                         String get_mobile = object.getString("mobile");
                                         //Log.i("get_mobile",get_mobile);
                                         if (db.checkEmpId(get_uId)) {
-                                            db.deleteContact(get_mobile);
+                                            db.deleteEmpRecord(get_mobile);
                                         }
                                     }
                                 }
@@ -1064,7 +1064,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                 Toast.makeText(AttendanceActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
 
                                 //Log.i("Reading: ", "Reading all contacts..");
-                                List<UserDetails_Model> contacts = db.getAllContacts();
+                                List<UserDetails_Model> contacts = db.getAllEmpDetails();
 
                                 for (UserDetails_Model cn : contacts)
                                 {
@@ -1110,7 +1110,7 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
             @Override
             public void run()
             {
-                List<UserDetails_Model> contacts = db.getAllContacts();
+                List<UserDetails_Model> contacts = db.getAllEmpDetails();
                 Log.i("MFS_Log contacts", "" + contacts);
 
                 result_match = 0;

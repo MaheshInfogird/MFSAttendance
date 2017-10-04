@@ -1277,7 +1277,7 @@ public class RegistrationActivity extends AppCompatActivity implements MFS100Eve
                 }
                 else
                 {
-                    db.addContact(new UserDetails_Model(null, emp_id, cid, attendancetype, emp_firstname, emp_lastname, MobileNo, RegisteredBase64_1, RegisteredBase64_2, RegisteredBase64_3, RegisteredBase64_4));
+                    db.addEmpData(new UserDetails_Model(null, emp_id, cid, attendancetype, emp_firstname, emp_lastname, MobileNo, RegisteredBase64_1, RegisteredBase64_2, RegisteredBase64_3, RegisteredBase64_4));
                     //Toast.makeText(RegistrationActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
                     textToSpeech.speak("Thumbs Registered Successfully!", TextToSpeech.QUEUE_FLUSH, null);
 

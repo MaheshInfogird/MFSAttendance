@@ -62,7 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         // onCreate(db);
     }
 
-    public void addContact(UserDetails_Model contact)
+    public void addEmpData(UserDetails_Model contact)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -82,7 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void UpdateContact(UserDetails_Model contact, String uid)
+    public void UpdateEmpData(UserDetails_Model contact, String uid)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -96,7 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void UpdateContactAttType(UserDetails_Model contact, String uid)
+    public void UpdateEmpAttType(UserDetails_Model contact, String uid)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -111,7 +111,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public List<UserDetails_Model> getAllContacts()
+    public List<UserDetails_Model> getAllEmpDetails()
     {
         List<UserDetails_Model> contactList = new ArrayList<UserDetails_Model>();
         String selectQuery = "SELECT  * FROM " + TABLE_User_Details;
@@ -142,7 +142,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
                 } while (cursor.moveToNext());
             }
+            cursor.close();
         }
+
         return contactList;
     }
 
@@ -168,7 +170,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 new String[] { String.valueOf(contact.getUid()) });
     }
 
-    public void deleteContact(String mob)
+    public void deleteEmpRecord(String mob)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_User_Details +"where" + KEY_PH_NO +"="+mob);
@@ -177,7 +179,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.close();
     }
 
-    public void delete_record()
+    public void deleteAllEmpRecord()
     {
         SQLiteDatabase db = this.getWritableDatabase();
         //db.execSQL("delete from "+ TABLE_User_Details);
@@ -201,9 +203,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
         UserDetails_Model contact = new UserDetails_Model();
 
-        if(cursor.getCount() ==0)
+        if(cursor.getCount() == 0)
         {
-            Log.i("Empty","Table EMpty");
+            Log.i("Empty","Table Empty");
         }
         else
         {
@@ -211,6 +213,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
             contact.setPrimaryKey(cursor.getString(0));
             Log.i("last entry_db",cursor.getString(0));
         }
+
+        cursor.close();
         return contact;
     }
 

@@ -70,7 +70,7 @@ public class LogInActivity extends AppCompatActivity
     String url_http;
     String myJSON = null;
     String UserName, Password;
-    String Current_Location;
+    String Current_Location = "";
     String android_id;
     String Login_id;
 

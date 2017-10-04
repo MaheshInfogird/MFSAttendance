@@ -1244,7 +1244,7 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                 {
                     if (db.checkEmpId(emp_id))
                     {
-                        db.UpdateContact(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
+                        db.UpdateEmpData(new UserDetails_Model(RegisteredBase64_1,RegisteredBase64_2,RegisteredBase64_3,RegisteredBase64_4), emp_id);
                     }
 
                     //Toast.makeText(ResetThumbActivity.this, "Thumbs Registered Successfully", Toast.LENGTH_LONG).show();
@@ -1253,9 +1253,11 @@ public class ResetThumbActivity extends AppCompatActivity implements MFS100Event
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResetThumbActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
                     alertDialog.setTitle("Thumbs Updated Successfully");
                     alertDialog.setCancelable(false);
-                    alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                    {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
                             dialog.dismiss();
                             img_register1.setImageResource(R.drawable.imagefinger);
                             img_register2.setImageResource(R.drawable.imagefinger);

@@ -590,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (outid.equals("1"))
                             {
-                                db.delete_record();
+                                db.deleteAllEmpRecord();
                                 session.logout_url();
                                 Intent intent = new Intent(MainActivity.this, UrlActivity.class);
                                 startActivity(intent);
@@ -947,6 +947,8 @@ public class MainActivity extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(myJson2);
                                 Log.i("jsonArray123", "" + jsonArray);
 
+//"empattDid":3,"uId":4,"firstName":"Harshad","lastName":"Patil","cid":"Z3",
+// "mobile":"8888113788","status":"1","attendancetype":1,"applyshift":1,"Thumexp":
                                 empattDid_arr.clear();
 
                                 for(int i=0; i <jsonArray.length(); i++)
@@ -1019,7 +1021,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
 
                                         //Log.i("Insert: ", "Inserting ..");
-                                        db.addContact(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
+                                        db.addEmpData(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
                                     }
                                     else if (get_status.equals("2"))
                                     {
@@ -1075,7 +1077,7 @@ public class MainActivity extends AppCompatActivity {
                                         //Log.i("Insert: ", "Inserting ..");
                                         if (db.checkEmpId(get_uId))
                                         {
-                                            db.UpdateContactAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType), get_uId);
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType), get_uId);
                                         }
                                     }
                                     else if (get_status.equals("3"))
@@ -1087,7 +1089,7 @@ public class MainActivity extends AppCompatActivity {
                                         //Log.i("get_mobile",get_mobile);
                                         if (db.checkEmpId(get_uId))
                                         {
-                                            db.deleteContact(get_mobile);
+                                            db.deleteEmpRecord(get_mobile);
                                         }
                                     }
                                 }
@@ -1095,7 +1097,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Data updated successfully", Toast.LENGTH_LONG).show();
 
                                 //Log.i("Reading: ", "Reading all contacts..");
-                                List<UserDetails_Model> contacts = db.getAllContacts();
+                                List<UserDetails_Model> contacts = db.getAllEmpDetails();
 
                                 for (UserDetails_Model cn : contacts)
                                 {
