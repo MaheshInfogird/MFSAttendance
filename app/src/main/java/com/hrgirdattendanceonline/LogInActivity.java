@@ -129,37 +129,6 @@ public class LogInActivity extends AppCompatActivity
             }
         }
 
-        /*if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
-        {
-            ActivityCompat.requestPermissions(LogInActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
-        else
-        {
-            gps = new GPSTracker(getApplicationContext(), LogInActivity.this);
-            if (gps.canGetLocation())
-            {
-                latitude = gps.getLatitude();
-                longitude = gps.getLongitude();
-                Current_Location = gps.getlocation_Address();
-                //Log.i("Current_Location",Current_Location);
-            }
-            else
-            {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(LogInActivity.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
-                alertDialog.setMessage("Please Enable GPS");
-                alertDialog.setCancelable(true);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                alertDialog.show();
-            }
-        }*/
-
         ed_userName = (EditText)findViewById(R.id.ed_userName);
         ed_password = (EditText)findViewById(R.id.ed_password);
         btn_signIn = (Button) findViewById(R.id.btn_signIn);
@@ -179,18 +148,22 @@ public class LogInActivity extends AppCompatActivity
         logo_login = (ImageView)findViewById(R.id.logo_login);
         Picasso.with(getApplicationContext()).load(logo).into(logo_login);
 
-        txt_forgotPass.setOnClickListener(new View.OnClickListener() {
+        txt_forgotPass.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Intent intent = new Intent(LogInActivity.this, ForgotPassword.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        ed_userName.setOnClickListener(new View.OnClickListener() {
+        ed_userName.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 poweredby_layout.setVisibility(View.GONE);
             }
         });
@@ -211,26 +184,23 @@ public class LogInActivity extends AppCompatActivity
                         ed_password.setError("Please enter password");
                         txtChange();
                     } 
-                    else if (UserName.equals("")) {
+                    else if (UserName.equals(""))
+                    {
                         ed_userName.setError("Please enter email/mobile");
                         txtChange();
                     }
-                    else if (Password.equals("")) {
+                    else if (Password.equals(""))
+                    {
                         ed_password.setError("Please enter password");
                         txtChange();
                     } 
                     else
                     {
-                        /*if (Current_Location != null)
-                        {*/
-                            signIn();
-                        /*}
-                        else {
-                            Toast.makeText(LogInActivity.this, "Failed to get location", Toast.LENGTH_LONG).show();
-                        }*/
+                        signIn();
                     }
                 }
-                else {
+                else
+                {
                     Toast.makeText(LogInActivity.this, "Please check your internet connection", Toast.LENGTH_LONG).show();
                 }
             }
@@ -239,54 +209,6 @@ public class LogInActivity extends AppCompatActivity
         deviceData();
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i("requestCode",""+requestCode );//1
-
-        switch (requestCode)
-        {
-            case 1:
-            {
-                Log.i("grantResults",""+grantResults.length );
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
-                {
-                    Log.i("grantResults_in",""+grantResults.length );
-                    gps = new GPSTracker(getApplicationContext(), LogInActivity.this);
-
-                    if (gps.canGetLocation())
-                    {
-                        latitude = gps.getLatitude();
-                        longitude = gps.getLongitude();
-                        Current_Location = gps.getlocation_Address();
-                        //Log.i("Current_Location",Current_Location);
-                        if (Current_Location == null)
-                        {
-                            Current_Location = "";
-                        }
-                    }
-                    /*else
-                    {
-                        AlertDialog.Builder  builder = new AlertDialog.Builder(LogInActivity.this);
-                        builder.setMessage("Please Enable GPS");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface d, int arg1)
-                            {
-                                d.dismiss();
-                            }
-                        });
-                    }*/
-                }
-                else
-                {
-                    Log.i("grantResults_else",""+grantResults.length );
-                }
-                return;
-            }
-        }
-    }
 
     public void deviceData()
     {
@@ -468,12 +390,14 @@ public class LogInActivity extends AppCompatActivity
                             editor.putString("uId", uId);
                             editor.commit();
 
-                            if (Login_id.equals("1")) {
+                            if (Login_id.equals("1"))
+                            {
                                 Intent intent = new Intent(LogInActivity.this, RegistrationActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
-                            else {
+                            else
+                            {
                                 Intent intent = new Intent(LogInActivity.this, ResetThumbActivity.class);
                                 startActivity(intent);
                                 finish();

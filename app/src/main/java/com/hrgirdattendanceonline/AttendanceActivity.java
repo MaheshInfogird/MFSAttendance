@@ -989,8 +989,14 @@ public class AttendanceActivity extends AppCompatActivity implements MFS100Event
                                             }
                                         }
 
-                                        //Log.i("Insert: ", "Inserting ..");
-                                        db.addEmpData(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4));
+                                        if (db.checkEmpId(get_uId))
+                                        {
+                                            db.UpdateEmpAttType(new UserDetails_Model(t1, t2, t3, t4, get_attType, get_applyshift), get_uId);
+                                        }
+                                        else
+                                        {
+                                            db.addEmpData(new UserDetails_Model(null, get_uId, get_cid, get_attType, get_firstName, get_lastName, get_mobile, t1, t2, t3, t4,get_applyshift));
+                                        }
                                     }
                                     else if (get_status.equals("2"))
                                     {
